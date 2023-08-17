@@ -28,6 +28,8 @@ jobs:
           npm install -g aws-cdk
           npm ci
           npm run build
+      # - name: Run Tests
+      #   run: npm run test
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
         with:

@@ -42,6 +42,18 @@
     "@aws-cdk/customresources:installLatestAwsSdkDefault": false,
     "@aws-cdk/aws-rds:databaseProxyUniqueResourceName": true,
     "@aws-cdk/aws-codedeploy:removeAlarmsFromDeploymentGroup": true,
-    "@aws-cdk/aws-apigateway:authorizerChangeDeploymentLogicalId": true
+    "@aws-cdk/aws-apigateway:authorizerChangeDeploymentLogicalId": true,
+    "ImageBuilderPipelineConfigurations": [
+      {
+        "name": "imagebuilder-example",
+        "components": ["image-builder/components"],
+        "instanceProfileName": "ImageBuilderInstanceProfile",
+        "cfnImageRecipeName": "imagebuilder-example-recipe",
+        "version": "0.0.1",
+        "parentImage": {
+          "us-east-1": { "amiID": "arn:aws:imagebuilder:us-east-1:aws:image/ubuntu-2204-lts-jammy-7305/x.x.x" }
+        }
+      }
+    ]
   }
 }

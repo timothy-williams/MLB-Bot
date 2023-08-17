@@ -1,0 +1,2 @@
+export const minecraftUrl = 'https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar'
+// run command: java -Xmx1024M -Xms1024M -jar minecraft_server.1.20.1.jar nogui

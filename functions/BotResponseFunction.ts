@@ -96,7 +96,7 @@ export async function handler(
   putItem();
 
   const help_response = `
-*** Available Games ***
+*** Games TBD ***
   7 Days to Die - NOT READY
   Ark: Survival Evolved - NOT READY
   Factorio - NOT READY
@@ -108,18 +108,18 @@ export async function handler(
   
 *** Admin Commands ***
   start: Start the game server. #TODO respond with connection info based on game.
-  stop: Stop the game server. #TODO ensure backup taken of bot, print output of that like a receipt?
-  restart: Restart the game server. #TODO this should ask user if they want to backup first, then restart.
-  update: Update the game server to the latest version. #TODO this should ask user if they want to backup first, then update.
-  backup: Backup the game server. #TODO this should ask user if they want to backup first, then backup.
-  quick-restore: Restore the game server from the latest backup taken. #TODO this should ask user if they want to confirm the info of the backup first, then restore
+  stop: Stop the game server. #TODO ensure backup taken of bot, print output of that backup execution
+  restart: Restart the game server. #TODO option for user to backup first - default yes
+  update: Update the game server to the latest version. #TODO option for user to backup first - default yes
+  backup: Backup the game server.
+  quick-restore: Restore the game server from the latest backup taken. #TODO inputs a backup ID
   check-admin: Check if a user is an admin.
   add-admin: Add a user to the admin list.
-  remove-admin: Check if a user is an admin.
+  remove-admin: Remove user from admin permissions.
   
 *** User Commands ***
-  feedback: Send feedback to the bot owner. #TODO this should send a DM to the bot owner with the feedback and register in DDB
-  status: Get the status of the bot on this guild. #TODO give response items
+  feedback: Send feedback to the bot owner.
+  status: Get the status of the bot on this guild.
 
 Username: ${event.jsonBody.member?.user.username}
 AdminStatus: ${admin_status}`;
@@ -130,7 +130,7 @@ AdminStatus: ${admin_status}`;
   // GuildId: ${event.jsonBody.guild_id}`,
 
   var discord_content = "Default message - this should never appear.";
-  const no_permissions = "You do not have permission to use this command.";
+  const no_permissions_error_message = "You do not have permission to use this command.";
 
   const stepFunctions = new AWS.StepFunctions();
   const input = {
@@ -138,10 +138,12 @@ AdminStatus: ${admin_status}`;
     commandValue: commandStructure.commandValue,
   };
 
+
   switch (commandStructure.commandName) {
     case "game_server_manager":
       switch (commandStructure.commandValue) {
         case "status":
+          
           discord_content = "Implementing status response.";
           break;
         case "feedback":
@@ -178,7 +180,7 @@ AdminStatus: ${admin_status}`;
               );
             }
           } else {
-            discord_content = no_permissions;
+            discord_content = no_permissions_error_message;
           }
           break;
         case "stop":

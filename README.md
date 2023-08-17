@@ -1,10 +1,12 @@
-# Davebot
+# GameServerBot
 
 This is a bot to make life easy for those of us in Discord servers that tend to have a rotation of multiplayer games as the seasons go by. Davebot will allow a subscriber to invite the bot into any Discord servers that the subscriber is in, and the bot will allow access of it's commands to any subscribers in the server.
 
 ![Build status](https://github.com/MidnightSunLabs/game-server-bot/workflows/Build/badge.svg "GitHub Actions Build Status")
 
 ## Commands
+
+TODO - These will be updated later.
 
 ```shell
 /<command> <value>
@@ -31,8 +33,9 @@ Initial steamcmd servers to support:
 * Rust - [App 258550 · SteamDB](https://steamdb.info/app/258550/)
 * Ark - [App 376030 · SteamDB](https://steamdb.info/app/376030/)
 * Space Engineers - [App 298740 · SteamDB](https://steamdb.info/app/298740/)
+* 
 
 ## Minecraft
 
 Although Minecraft is not a Steam game, we will be supporting Minecraft servers.
-No ETA on mod support as of March 2023.
+No ETA on mod support as of August 2023.

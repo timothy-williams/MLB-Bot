@@ -13,6 +13,7 @@ import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 
 export class GameServerBotStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -112,7 +113,7 @@ export class GameServerBotStack extends cdk.Stack {
       this,
       "discord-commands-lambda",
       {
-        runtime: Runtime.NODEJS_14_X,
+        runtime: Runtime.NODEJS_18_X,
         entry: path.join(__dirname, "../functions/BotResponseFunction.ts"), // '../functions/DiscordCommands.ts'
         handler: "handler",
         timeout: Duration.seconds(60),
@@ -130,14 +131,59 @@ export class GameServerBotStack extends cdk.Stack {
 
     /*
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    SSM
+    SSM - Parameter store to hold container image information.
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     */
 
-    // Set up SSM Parameter store to hold container image information.
-    const FactorioContainerParam = new ssm.StringParameter(this, "FactorioContainerImage", {
-      parameterName: "/GameServerBot/FactorioContainerImage",
-      stringValue: "factoriotools/factorio:stable",
+    const ContainerBaseImageSsmParam7DtD = new ssm.StringParameter(this, "ContainerBaseImage7DtD", {
+      parameterName: "/GameServerBot/ContainerBaseImage7DtD",
+      stringValue: "TODO",
+    });
+
+    const ContainerBaseImageSsmParamArk = new ssm.StringParameter(this, "ContainerBaseImageArk", {
+      parameterName: "/GameServerBot/ContainerBaseImageArk",
+      stringValue: "TODO",
+    });
+
+    const ContainerBaseImageSsmParamFactorio = new ssm.StringParameter(this, "ContainerBaseImageFactorio", {
+      parameterName: "/GameServerBot/ContainerBaseImageFactorio",
+      stringValue: "TODO",
+    });
+
+    const ContainerBaseImageSsmParamMinecraft = new ssm.StringParameter(this, "ContainerBaseImageMinecraft", {
+      parameterName: "/GameServerBot/ContainerBaseImageMinecraft",
+      stringValue: "TODO",
+    });
+
+    const ContainerBaseImageSsmParamRust = new ssm.StringParameter(this, "ContainerBaseImageRust", {
+      parameterName: "/GameServerBot/ContainerBaseImageRust",
+      stringValue: "TODO",
+    });
+
+    const ContainerBaseImageSsmParamSatisfactory = new ssm.StringParameter(this, "ContainerBaseImageSatisfactory", {
+      parameterName: "/GameServerBot/ContainerBaseImageSatisfactory",
+      stringValue: "TODO",
+    });
+
+    const ContainerBaseImageSsmParamSpaceEngineers = new ssm.StringParameter(this, "ContainerBaseImageSpaceEngineers", {
+      parameterName: "/GameServerBot/ContainerBaseImageSpaceEngineers",
+      stringValue: "TODO",
+    });
+
+    const ContainerBaseImageSsmParamValheim = new ssm.StringParameter(this, "ContainerBaseImageValheim", {
+      parameterName: "/GameServerBot/ContainerBaseImageValheim",
+      stringValue: "TODO",
+    });
+
+    /*
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    Storage
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    */
+
+    const gameServerSoftwareBucket = new s3.Bucket(this, "GameServerSoftwareBucket", {
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
     /*
