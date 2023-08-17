@@ -9,4 +9,4 @@ export const commandLambdaARN = process.env['COMMAND_LAMBDA_ARN'] ?? 'commandLam
 /**
  * The name of the secret for the game-server discord bot.
  */
-export const discordBotSecretArn = process.env['DISCORD_BOT_SECRET_ARN'] ?? 'arn:aws:secretsmanager:us-east-1:560619290409:secret:discord-bot-1cMbq7';
+export const discordBotSecretArn = process.env['DISCORD_BOT_SECRET_ARN'] ?? 'arn:aws:secretsmanager:us-east-1:247158676068:secret:DiscordBotSecret-ioKDmU';
