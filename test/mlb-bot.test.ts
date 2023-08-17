@@ -1,13 +1,13 @@
 import * as cdk from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import * as GameServerBot from '../lib/game-server-bot-stack';
+import * as MLBBot from '../lib/mlb-bot-stack';
 
 // example test. To run these tests, uncomment this file along with the
-// example resource in lib/game-server-bot-stack.ts
+// example resource in lib/mlb-bot-stack.ts
 test('SQS Queue Created', () => {
   const app = new cdk.App();
     // WHEN
-  const stack = new GameServerBot.GameServerBotStack(app, 'MyTestStack');
+  const stack = new MLBBot.MLBBotStack(app, 'MyTestStack');
     // THEN
   const template = Template.fromStack(stack);
 

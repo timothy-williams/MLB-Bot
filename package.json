@@ -1,8 +1,8 @@
 {
-  "name": "game-server-bot",
+  "name": "mlb-bot",
   "version": "0.0.5",
   "bin": {
-    "game-server-bot": "bin/game-server-bot.js"
+    "mlb-bot": "bin/mlb-bot.js"
   },
   "scripts": {
     "build": "tsc",

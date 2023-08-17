@@ -3,20 +3,13 @@ import { getDiscordSecrets } from "./utils/DiscordSecrets";
 import { sendFollowupMessage } from "./utils/EndpointInteractions";
 import {
   IDiscordEventRequest,
-  IDiscordResponseData,
-  IDiscordCommandStructure,
+  IDiscordCommandStructure
 } from "../lib/types/discord";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDB } from "aws-sdk"; // trying something with this, refactor later
-import { DynamoDBDocumentClient, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-// import step function sdk
-import { SFNClient, StartExecutionCommand } from "@aws-sdk/client-sfn";
-const AWS = require("aws-sdk");
-const dynamoDb = new DynamoDB.DocumentClient(); // trying something with this, refactor later
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 
-const gameServerSubscriberTableName = process.env.GameServerSubscriberTableName;
+// const AWS = require("aws-sdk");
 const commandHistoryTableName = process.env.CommandHistoryTableName;
-const mainStateMachineArn = process.env.MainStateMachineArn;
 const region = process.env.AWS_REGION;
 const ddbClient = new DynamoDBClient({ region: region });
 
@@ -60,22 +53,22 @@ export async function handler(
     guildId: event.jsonBody.guild_id,
   };
 
-  const commandValue = event.jsonBody.data?.options?.[0]?.value;
-  const userIdOfCommandUsed = event.jsonBody.member?.user.id;
+  // const commandValue = event.jsonBody.data?.options?.[0]?.value;
+  // const userIdOfCommandUsed = event.jsonBody.member?.user.id;
 
   // TODO - refactor this
-  const frosty_user_id = "131480794047840256";
+  const smeez_user_id = "176503559121141760";
   console.log("Command Structure:");
   console.log(commandStructure)
 
   var admin_status = false;
 
-  if (commandStructure.userId === frosty_user_id) {
+  if (commandStructure.userId === smeez_user_id) {
     admin_status = true;
   }
 
-  const userNameOfCommandUsed = event.jsonBody.member?.user.username;
-  const guildIdOfCommandUsed = event.jsonBody.guild_id;
+  // const userNameOfCommandUsed = event.jsonBody.member?.user.username;
+  // const guildIdOfCommandUsed = event.jsonBody.guild_id;
 
   const putItem = async () => {
     // Set the parameters.
@@ -95,49 +88,20 @@ export async function handler(
   };
   putItem();
 
-  const help_response = `
-*** Games TBD ***
-  7 Days to Die - NOT READY
-  Ark: Survival Evolved - NOT READY
-  Factorio - NOT READY
-  Minecraft - NOT READY
-  Rust - NOT READY
-  Satisfactory - NOT READY
-  Space Engineers - NOT READY
-  Valheim - NOT READY
-  
-*** Admin Commands ***
-  start: Start the game server. #TODO respond with connection info based on game.
-  stop: Stop the game server. #TODO ensure backup taken of bot, print output of that backup execution
-  restart: Restart the game server. #TODO option for user to backup first - default yes
-  update: Update the game server to the latest version. #TODO option for user to backup first - default yes
-  backup: Backup the game server.
-  quick-restore: Restore the game server from the latest backup taken. #TODO inputs a backup ID
-  check-admin: Check if a user is an admin.
-  add-admin: Add a user to the admin list.
-  remove-admin: Remove user from admin permissions.
-  
-*** User Commands ***
-  feedback: Send feedback to the bot owner.
-  status: Get the status of the bot on this guild.
-
-Username: ${event.jsonBody.member?.user.username}
-AdminStatus: ${admin_status}`;
-
   // Snippets for the response below:
   // Command: ${event.jsonBody.data?.options?.[0]?.value}
   // Username: ${event.jsonBody.member?.user.username}
   // GuildId: ${event.jsonBody.guild_id}`,
 
   var discord_content = "Default message - this should never appear.";
-  const no_permissions_error_message = "You do not have permission to use this command.";
+  // const no_permissions_error_message = "You do not have permission to use this command.";
 
+  /**
   const stepFunctions = new AWS.StepFunctions();
   const input = {
     commandName: commandStructure.commandName,
-    commandValue: commandStructure.commandValue,
+    commandValue: commandStructure.commandValue
   };
-
 
   switch (commandStructure.commandName) {
     case "game_server_manager":
@@ -248,14 +212,16 @@ AdminStatus: ${admin_status}`;
       discord_content = "Invalid command. Please try again.";
       break;
   }
+  */
 
   const response = {
     tts: false,
-    // `*** Response ***
+    // *** Response ***
     content: discord_content,
     embeds: [],
     allowedMentions: [],
   };
+
   if (
     event.jsonBody.token &&
     (await sendFollowupMessage(endpointInfo, event.jsonBody.token, response))
