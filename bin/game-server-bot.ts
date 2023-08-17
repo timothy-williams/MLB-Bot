@@ -9,7 +9,7 @@ const app = new cdk.App();
 new ImageBuilderStack(app, 'ImageBuilderStack', {
     env: {
         region: 'us-east-1',
-        account: '560619290409'
+        account: '247158676068'
     },
 });
 
