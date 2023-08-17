@@ -1,6 +1,6 @@
 import { SecretsManager } from "aws-sdk";
 import { IDiscordSecrets } from "../../lib/types/discord";
-import { discordBotSecretArn } from "../constants/EnvironmentProps";
+import { discordClientSecretArn } from "../constants/EnvironmentProps";
 
 const secretsManager = new SecretsManager();
 
@@ -18,7 +18,7 @@ export async function getDiscordSecrets(): Promise<IDiscordSecrets | undefined> 
   if (!__discordSecrets) {
     try {
       const discordApiKeys = await secretsManager.getSecretValue({
-        SecretId: discordBotSecretArn,
+        SecretId: discordClientSecretArn,
       }).promise();
       if (discordApiKeys.SecretString) {
         __discordSecrets = JSON.parse(discordApiKeys.SecretString);

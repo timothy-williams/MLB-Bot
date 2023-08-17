@@ -5,7 +5,7 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { DiscordBotConstruct } from "../constructs/DiscordBotConstruct";
-import { discordBotSecretArn } from "../functions/constants/EnvironmentProps";
+import { discordClientSecretArn } from "../functions/constants/EnvironmentProps";
 import * as path from "path";
 import * as stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
 import * as kms from 'aws-cdk-lib/aws-kms';
@@ -31,8 +31,8 @@ export class MLBBotStack extends cdk.Stack {
     });
 
     // secrets manager entry for the bot token
-    const discordBotSecret = new secretsmanager.Secret(this, "DiscordBotSecret", {
-      secretName: "DiscordBotSecret",
+    const discordClientSecret = new secretsmanager.Secret(this, "DiscordClientSecret", {
+      secretName: "DiscordClientSecret",
       encryptionKey: cmk,
       removalPolicy: cdk.RemovalPolicy.RETAIN
     });

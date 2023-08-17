@@ -6,7 +6,7 @@ import {NodejsFunction} from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import {Construct} from 'constructs';
 import * as path from 'path';
-import { discordBotSecretArn } from '../functions/constants/EnvironmentProps';
+import { discordClientSecretArn } from '../functions/constants/EnvironmentProps';
 import { ServiceIntegrationPattern } from 'aws-cdk-lib/aws-stepfunctions';
 import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 
@@ -40,7 +40,7 @@ export class DiscordBotConstruct extends Construct {
     this.discordAPISecrets = secretsmanager.Secret.fromSecretCompleteArn(
         this,
         'discord-bot-secret',
-        discordBotSecretArn,
+        discordClientSecretArn,
     );
 
 
