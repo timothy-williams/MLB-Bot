@@ -96,7 +96,7 @@ export async function handler(
   var discord_content = "Default message - this should never appear.";
   // const no_permissions_error_message = "You do not have permission to use this command.";
 
-  /**
+  
   const stepFunctions = new AWS.StepFunctions();
   const input = {
     commandName: commandStructure.commandName,
@@ -104,87 +104,14 @@ export async function handler(
   };
 
   switch (commandStructure.commandName) {
-    case "game_server_manager":
+    case "blep":
       switch (commandStructure.commandValue) {
-        case "status":
-          
-          discord_content = "Implementing status response.";
-          break;
-        case "feedback":
-          discord_content = "Implementing feedback response.";
-          break;
-        case "help":
-          discord_content = help_response;
-          break;
-        case "start":
-          if (admin_status === true) {
-            // invoke the test state machine here
-            try {
-              const result = await stepFunctions
-                .startExecution({
-                  stateMachineArn: mainStateMachineArn,
-                  input: JSON.stringify(input),
-                })
-                .promise();
-
-              const execution_id = result.executionArn.match(
-                /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g
-              );
-
-              console.log(`ExecutionId: ${execution_id}`);
-              const execution_message = `State machine execution started with ID:\n${execution_id}`;
-
-              console.log(execution_message);
-              discord_content = `Starting server...\n${execution_message}`;
-              // return { executionArn: result.executionArn };
-            } catch (err) {
-              console.error(err);
-              throw new Error(
-                `Failed to start state machine execution: ${err}`
-              );
-            }
-          } else {
-            discord_content = no_permissions_error_message;
-          }
-          break;
-        case "stop":
-          discord_content = `Stopping server...
-          TODO - implement function to stop the server.`;
-          break;
-        case "restart":
-          discord_content = `Restarting server...
-          TODO - implement function to restart the server.`;
-          break;
-        case "update":
-          discord_content = `Updating server...
-          TODO - implement function to update the server.`;
-          break;
-        case "backup":
-          discord_content = `Backing up the server...
-          TODO - implement function to back up the server.`;
-          break;
-        case "quick-restore":
-          discord_content = `Restoring server from latest backup...
-          TODO - implement function to quick-restore the server.`;
-          break;
-        case "check-admin":
-          discord_content = `Checking if User ID is an admin...
-          TODO - implement function to check this functionality.`;
-          break;
-        case "add-admin":
-          discord_content = `Adding User ID as an admin...
-          TODO - implement function to check this functionality.`;
-          break;
-        case "remove-admin":
-          discord_content = `Removing User ID as an admin...
-          TODO - implement function to check this functionality.`;
-          break;
-        default:
-          discord_content = "Unknown command name.";
+        case "animal_dog":
+          discord_content = "woof";
           break;
       }
       break;
-    case "select_game":
+    /*case "select_game":
       discord_content = `Switching game to ${input.commandValue}`;
       const updatedGameSelection = {
         userId: commandStructure.userId,
@@ -210,9 +137,9 @@ export async function handler(
       break;
     default:
       discord_content = "Invalid command. Please try again.";
-      break;
+      break;*/
   }
-  */
+  
 
   const response = {
     tts: false,
