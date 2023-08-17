@@ -1,21 +1,18 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
+import { Duration} from "aws-cdk-lib";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
-import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { DiscordBotConstruct } from "../constructs/DiscordBotConstruct";
-import * as path from "path";
 import { discordBotSecretArn } from "../functions/constants/EnvironmentProps";
+import * as path from "path";
 import * as stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
-import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
-import * as s3 from 'aws-cdk-lib/aws-s3';
 
-export class GameServerBotStack extends cdk.Stack {
+export class MLBBotStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -26,9 +23,9 @@ export class GameServerBotStack extends cdk.Stack {
     */
 
     // CMK for encrypting our workflows
-    const cmk = new kms.Key(this, "GameServerBotCmk", {
-      alias: "GameServerBotCmk",
-      description: "CMK for encrypting Game Server Bot workflows.",
+    const cmk = new kms.Key(this, "MLBBotCmk", {
+      alias: "MLBBotCmk",
+      description: "CMK for encrypting MLB Bot workflows.",
       enableKeyRotation: true,
       removalPolicy: cdk.RemovalPolicy.RETAIN
     });
@@ -45,20 +42,6 @@ export class GameServerBotStack extends cdk.Stack {
     DynamoDB Stuff
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     */
-
-    // DynamoDB table to track discord server game settings.
-    const gameServerSubscriberTable = new dynamodb.Table(this, "GameServerSubscriberTable", {
-      partitionKey: {
-        name: "userId",
-        type: dynamodb.AttributeType.STRING,
-      },
-      sortKey: {
-        name: "guildId",
-        type: dynamodb.AttributeType.STRING,
-      },
-      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      removalPolicy: cdk.RemovalPolicy.RETAIN
-    });
 
     const commandHistoryTable = new dynamodb.Table(this, "CommandHistoryTable", {
       partitionKey: {
@@ -86,13 +69,13 @@ export class GameServerBotStack extends cdk.Stack {
     const stepFunctionDefinition = startState;
 
     // log group for the step function
-    const stepFunctionLogGroup = new logs.LogGroup(this, 'GsbStepFunctionLogGroup', {
-      logGroupName: 'GsbStepFunctionLogGroup',
+    const stepFunctionLogGroup = new logs.LogGroup(this, 'MLBBotStepFunctionLogGroup', {
+      logGroupName: 'MLBBotStepFunctionLogGroup',
       removalPolicy: cdk.RemovalPolicy.RETAIN, // could be noisy in dev
     });
 
     // lambda is granted permission to the state machine at the bottom of this file
-    const mainStateMachine = new stepfunctions.StateMachine(this, 'GsbMainStateMachine', {
+    const mainStateMachine = new stepfunctions.StateMachine(this, 'MLBBotMainStateMachine', {
         definition: stepFunctionDefinition,
         stateMachineType: stepfunctions.StateMachineType.STANDARD,
         // enable logging
@@ -118,7 +101,6 @@ export class GameServerBotStack extends cdk.Stack {
         handler: "handler",
         timeout: Duration.seconds(60),
         environment: {
-          GameServerSubscriberTableName: gameServerSubscriberTable.tableName,
           CommandHistoryTableName: commandHistoryTable.tableName,
           MainStateMachineArn: mainStateMachine.stateMachineArn,
         },
@@ -131,69 +113,11 @@ export class GameServerBotStack extends cdk.Stack {
 
     /*
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    SSM - Parameter store to hold container image information.
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    */
-
-    const ContainerBaseImageSsmParam7DtD = new ssm.StringParameter(this, "ContainerBaseImage7DtD", {
-      parameterName: "/GameServerBot/ContainerBaseImage7DtD",
-      stringValue: "TODO",
-    });
-
-    const ContainerBaseImageSsmParamArk = new ssm.StringParameter(this, "ContainerBaseImageArk", {
-      parameterName: "/GameServerBot/ContainerBaseImageArk",
-      stringValue: "TODO",
-    });
-
-    const ContainerBaseImageSsmParamFactorio = new ssm.StringParameter(this, "ContainerBaseImageFactorio", {
-      parameterName: "/GameServerBot/ContainerBaseImageFactorio",
-      stringValue: "TODO",
-    });
-
-    const ContainerBaseImageSsmParamMinecraft = new ssm.StringParameter(this, "ContainerBaseImageMinecraft", {
-      parameterName: "/GameServerBot/ContainerBaseImageMinecraft",
-      stringValue: "TODO",
-    });
-
-    const ContainerBaseImageSsmParamRust = new ssm.StringParameter(this, "ContainerBaseImageRust", {
-      parameterName: "/GameServerBot/ContainerBaseImageRust",
-      stringValue: "TODO",
-    });
-
-    const ContainerBaseImageSsmParamSatisfactory = new ssm.StringParameter(this, "ContainerBaseImageSatisfactory", {
-      parameterName: "/GameServerBot/ContainerBaseImageSatisfactory",
-      stringValue: "TODO",
-    });
-
-    const ContainerBaseImageSsmParamSpaceEngineers = new ssm.StringParameter(this, "ContainerBaseImageSpaceEngineers", {
-      parameterName: "/GameServerBot/ContainerBaseImageSpaceEngineers",
-      stringValue: "TODO",
-    });
-
-    const ContainerBaseImageSsmParamValheim = new ssm.StringParameter(this, "ContainerBaseImageValheim", {
-      parameterName: "/GameServerBot/ContainerBaseImageValheim",
-      stringValue: "TODO",
-    });
-
-    /*
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    Storage
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    */
-
-    const gameServerSoftwareBucket = new s3.Bucket(this, "GameServerSoftwareBucket", {
-      encryption: s3.BucketEncryption.S3_MANAGED,
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
-    });
-
-    /*
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     Permissions
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     */
 
     commandHistoryTable.grantReadWriteData(discordCommandsLambda);
-    gameServerSubscriberTable.grantReadWriteData(discordCommandsLambda);
     mainStateMachine.grantStartExecution(discordCommandsLambda);
 
   }

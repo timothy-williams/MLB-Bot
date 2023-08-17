@@ -37,7 +37,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
       - name: CDK Synth
-        run: npx cdk synth --app "npx ts-node bin/game-server-bot.ts" --output "cdk.out"
+        run: npx cdk synth --app "npx ts-node bin/mlb-bot.ts" --output "cdk.out"
       # disabling tests during code migration
       # - name: CDK Testing
       #   run: npm run test
