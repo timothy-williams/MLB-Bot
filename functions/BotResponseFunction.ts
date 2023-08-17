@@ -8,7 +8,7 @@ import {
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 
-// const AWS = require("aws-sdk");
+const AWS = require("aws-sdk");
 const commandHistoryTableName = process.env.CommandHistoryTableName;
 const region = process.env.AWS_REGION;
 const ddbClient = new DynamoDBClient({ region: region });
