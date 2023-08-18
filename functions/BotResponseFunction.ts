@@ -45,7 +45,7 @@ export async function handler(
     authToken: discordSecret?.token,
     applicationId: discordSecret?.application_id,
   };
-  console.log(`Endpoint info:\n${endpointInfo}`)
+  console.log(`Endpoint info:\n${JSON.stringify(endpointInfo)}`)
 
   const commandStructure: IDiscordCommandStructure = {
     timestamp: Date.now(),
@@ -60,7 +60,7 @@ export async function handler(
 
   // TODO - refactor this
   const smeez_user_id = "176503559121141760";
-  console.log(`Command Structure:\n${commandStructure}`);
+  console.log(`Command Structure:\n${JSON.stringify(commandStructure)}`);
 
   var admin_status = false;
 
@@ -77,7 +77,7 @@ export async function handler(
       TableName: commandHistoryTableName,
       Item: commandStructure,
     };
-    console.log(`DEBUG - params:\n${params}`);
+    console.log(`DEBUG - params:\n${JSON.stringify(params)}`);
     try {
       const data = await ddbDocClient.send(new PutCommand(params));
       console.log("Success - item added or updated", data); // TODO - this isn't ideal
@@ -121,7 +121,7 @@ export async function handler(
     embeds: [],
     allowedMentions: [],
   };
-  console.log(`Response:\n${response}`)
+  console.log(`Response:\n${JSON.stringify(response)}`)
 
   if (
     event.jsonBody.token &&
