@@ -112,8 +112,6 @@ export async function handler(
       break;
   };
 
-  console.log(`Command output:\n${discord_content}`);
-
   const response = {
     tts: false,
     // *** Response ***
