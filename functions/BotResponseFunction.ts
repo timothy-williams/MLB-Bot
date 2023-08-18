@@ -7,6 +7,7 @@ import {
 } from "../lib/types/discord";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { todays_scores } from './commands/todays_scores';
 
 const AWS = require("aws-sdk");
 const commandHistoryTableName = process.env.CommandHistoryTableName;
@@ -104,43 +105,19 @@ export async function handler(
   };
 
   switch (commandStructure.commandName) {
-    case "blep":
-      switch (commandStructure.commandValue) {
-        case "animal_dog":
-          discord_content = "woof";
-          break;
+    case "todays_scores":
+        discord_content = await todays_scores();
+        break;
       }
-      break;
-    /*case "select_game":
-      discord_content = `Switching game to ${input.commandValue}`;
-      const updatedGameSelection = {
-        userId: commandStructure.userId,
-        guildId: commandStructure.guildId,
-        gameName: commandStructure.commandValue,
-        lastGameChange: new Date().toISOString(),
-      };
-      const updateGameSelection = async () => {
-        // Set the parameters.
-        const params = {
-          TableName: gameServerSubscriberTableName,
-          Item: updatedGameSelection,
-        };
-        try {
-          const data = await ddbDocClient.send(new PutCommand(params));
-          console.log("Success - item added or updated", data); // TODO - this isn't ideal
-        } catch (err: any) {
-          // TODO: this is gross fix it later
-          console.log("Error", err.stack);
-        }
-      };
-      updateGameSelection();
+    /*
+    case "other_command":
+      discord_content = "Here's another command template";
       break;
     default:
       discord_content = "Invalid command. Please try again.";
-      break;*/
-  }
+      break;
+    */ // Don't forgot any neccessary breaks or braces
   
-
   const response = {
     tts: false,
     // *** Response ***
