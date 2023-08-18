@@ -106,18 +106,15 @@ export async function handler(
 
   switch (commandStructure.commandName) {
     case "todays_scores":
-        discord_content = await todays_scores();
-        break;
-      }
-    /*
-    case "other_command":
-      discord_content = "Here's another command template";
+      discord_content = await todays_scores();
       break;
     default:
       discord_content = "Invalid command. Please try again.";
       break;
-    */ // Don't forgot any neccessary breaks or braces
-  
+  };
+
+  console.log(`Command output: ${discord_content}`);
+
   const response = {
     tts: false,
     // *** Response ***
