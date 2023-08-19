@@ -8,6 +8,7 @@ import {
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { todays_scores } from './commands/todays_scores';
+import { test_string } from './commands/test'
 
 const AWS = require("aws-sdk");
 const commandHistoryTableName = process.env.CommandHistoryTableName;
@@ -93,51 +94,40 @@ export async function handler(
   // Username: ${event.jsonBody.member?.user.username}
   // GuildId: ${event.jsonBody.guild_id}`,
 
-  // Send an initial response
-  const initialResponse = {
-    tts: false,
-    content: "Processing your request...",
-    embeds: [],
-    allowedMentions: [],
+  var discord_content = "Default message - this should never appear.";
+  // const no_permissions_error_message = "You do not have permission to use this command.";
+
+  const stepFunctions = new AWS.StepFunctions();
+  const input = {
+    commandName: commandStructure.commandName,
+    commandValue: commandStructure.commandValue
   };
-
-  if (
-    event.jsonBody.token &&
-    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, initialResponse))
-  ) {
-    console.log("Initial response sent successfully!");
-  } else {
-    console.log("Failed to send initial response!");
-  }
-
-  // Execute the command asynchronously
-  let discord_content = "Default message - this should never appear.";
 
   switch (commandStructure.commandName) {
     case "todays_scores":
-      discord_content = await todays_scores();
+      discord_content = await test_string();
       break;
     default:
       discord_content = "Invalid command. Please try again.";
       break;
   };
 
-  // Extend the response
-  const extendedResponse = {
+  const response = {
     tts: false,
+    // *** Response ***
     content: discord_content,
     embeds: [],
     allowedMentions: [],
   };
+  console.log(`Response:\n${JSON.stringify(response)}`)
 
   if (
     event.jsonBody.token &&
-    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, extendedResponse))
+    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, response))
   ) {
-    console.log("Extended response sent successfully!");
+    console.log("Responded successfully!");
   } else {
-    console.log("Failed to send extended response!");
+    console.log("Failed to send response!");
   }
-
   return "200";
 }
