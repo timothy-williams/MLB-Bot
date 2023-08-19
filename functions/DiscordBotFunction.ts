@@ -42,6 +42,7 @@ export async function handler(event: IDiscordEventRequest, _context: Context,
         // Note that all responses are deferred to meet Discord's 3 second
         // response time requirement.
         if (await Promise.all([verifyPromise, lambdaPromise])) {
+          console.log('This is a DEFERRED interaction.')
           return {
             type: 5,
           };

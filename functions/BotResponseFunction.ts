@@ -8,7 +8,6 @@ import {
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { todays_scores } from './commands/todays_scores';
-import { test_string } from './commands/test'
 
 const AWS = require("aws-sdk");
 const commandHistoryTableName = process.env.CommandHistoryTableName;
@@ -105,7 +104,7 @@ export async function handler(
 
   switch (commandStructure.commandName) {
     case "todays_scores":
-      discord_content = await test_string();
+      discord_content = await todays_scores();
       break;
     default:
       discord_content = "Invalid command. Please try again.";

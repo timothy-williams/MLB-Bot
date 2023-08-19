@@ -13,7 +13,7 @@ export async function todays_scores() {
     // Today's datetime
     const today: string = format(new Date(), 'yyyy-MM-dd');
     const todayVerbose: string = `**${format(new Date(), 'MMMM d, yyyy')}**`;
-    const endpoint: string = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}`
+    const endpoint: string = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}`;
     
     try {
         const res = await axios.get(endpoint);
