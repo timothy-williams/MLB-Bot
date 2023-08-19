@@ -93,40 +93,51 @@ export async function handler(
   // Username: ${event.jsonBody.member?.user.username}
   // GuildId: ${event.jsonBody.guild_id}`,
 
-  var discord_content = "Default message - this should never appear.";
-  // const no_permissions_error_message = "You do not have permission to use this command.";
-
-  const stepFunctions = new AWS.StepFunctions();
-  const input = {
-    commandName: commandStructure.commandName,
-    commandValue: commandStructure.commandValue
+  // Send an initial response
+  const initialResponse = {
+    tts: false,
+    content: "Processing your request...",
+    embeds: [],
+    allowedMentions: [],
   };
+
+  if (
+    event.jsonBody.token &&
+    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, initialResponse))
+  ) {
+    console.log("Initial response sent successfully!");
+  } else {
+    console.log("Failed to send initial response!");
+  }
+
+  // Execute the command asynchronously
+  let discord_content = "Default message - this should never appear.";
 
   switch (commandStructure.commandName) {
     case "todays_scores":
-      discord_content = "This is a test response.";
+      discord_content = await todays_scores();
       break;
     default:
       discord_content = "Invalid command. Please try again.";
       break;
   };
 
-  const response = {
+  // Extend the response
+  const extendedResponse = {
     tts: false,
-    // *** Response ***
     content: discord_content,
     embeds: [],
     allowedMentions: [],
   };
-  console.log(`Response:\n${JSON.stringify(response)}`)
 
   if (
     event.jsonBody.token &&
-    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, response))
+    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, extendedResponse))
   ) {
-    console.log("Responded successfully!");
+    console.log("Extended response sent successfully!");
   } else {
-    console.log("Failed to send response!");
+    console.log("Failed to send extended response!");
   }
+
   return "200";
 }
