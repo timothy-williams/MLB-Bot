@@ -96,7 +96,6 @@ export async function handler(
   var discord_content = "Default message - this should never appear.";
   // const no_permissions_error_message = "You do not have permission to use this command.";
 
-  
   const stepFunctions = new AWS.StepFunctions();
   const input = {
     commandName: commandStructure.commandName,
@@ -105,7 +104,7 @@ export async function handler(
 
   switch (commandStructure.commandName) {
     case "todays_scores":
-      discord_content = await todays_scores();
+      discord_content = "This is a test response.";
       break;
     default:
       discord_content = "Invalid command. Please try again.";
