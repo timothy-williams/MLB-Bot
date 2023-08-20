@@ -71,23 +71,6 @@ export async function handler(
   // const userNameOfCommandUsed = event.jsonBody.member?.user.username;
   // const guildIdOfCommandUsed = event.jsonBody.guild_id;
 
-  const putItem = async () => {
-    // Set the parameters.
-    const params = {
-      TableName: commandHistoryTableName,
-      Item: commandStructure,
-    };
-    console.log(`DEBUG - params:\n${JSON.stringify(params)}`);
-    try {
-      const data = await ddbDocClient.send(new PutCommand(params));
-      console.log("Success - item added or updated", data); // TODO - this isn't ideal
-    } catch (err: any) {
-      // TODO: this is gross fix it later
-      console.log("Error", err.stack);
-    }
-  };
-  putItem();
-
   // Snippets for the response below:
   // Command: ${event.jsonBody.data?.options?.[0]?.value}
   // Username: ${event.jsonBody.member?.user.username}
@@ -128,5 +111,23 @@ export async function handler(
   } else {
     console.log("Failed to send response!");
   }
+
+  const putItem = async () => {
+    // Set the parameters.
+    const params = {
+      TableName: commandHistoryTableName,
+      Item: commandStructure,
+    };
+    console.log(`DEBUG - params:\n${JSON.stringify(params)}`);
+    try {
+      const data = await ddbDocClient.send(new PutCommand(params));
+      console.log("Success - item added or updated", data); // TODO - this isn't ideal
+    } catch (err: any) {
+      // TODO: this is gross fix it later
+      console.log("Error", err.stack);
+    }
+  };
+  putItem();
+  
   return "200";
 }

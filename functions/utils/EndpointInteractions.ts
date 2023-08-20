@@ -24,9 +24,6 @@ export async function sendFollowupMessage(endpointInfo: IDiscordEndpointInfo,
 
   try {
     const url = `https://discord.com/api/v${endpointInfo.apiVersion ?? '10'}/webhooks/${endpointInfo.applicationId}/${interactionToken}`;
-    console.log(url)
-    console.log(data)
-    console.log(authConfig)
     return (await axios.post(url, data, authConfig)).status == 200;
   } catch (exception) {
     console.log(`There was an error posting a response: ${exception}`);
