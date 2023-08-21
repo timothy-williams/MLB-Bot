@@ -162,16 +162,4 @@ export class Game {
             console.error('Error fetching data:', error);
         }
     }
-
-    // Display function scoreboard()
-    async displayScoreboard() {
-        try {
-            const message = await this.scoreboard();
-            if (message !== null) {
-                console.log(message);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
 }
