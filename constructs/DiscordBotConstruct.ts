@@ -53,7 +53,7 @@ export class DiscordBotConstruct extends Construct {
         DISCORD_BOT_API_KEY_NAME: this.discordAPISecrets.secretName,
         COMMAND_LAMBDA_ARN: props.commandsLambdaFunction.functionArn,
       },
-      timeout: Duration.seconds(3),
+      timeout: Duration.seconds(20),
     });
     props.commandsLambdaFunction.addEnvironment(
         'DISCORD_BOT_API_KEY_NAME', this.discordAPISecrets.secretName);
