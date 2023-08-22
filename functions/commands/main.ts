@@ -35,9 +35,6 @@ export class Game {
             const homeWin: number = home.record.leagueRecord.wins;
             const homeLoss: number = home.record.leagueRecord.losses;
 
-            console.log(awayName);
-            console.log(homeName);
-
             let awayRuns: number;
             let homeRuns: number;
 
@@ -69,9 +66,6 @@ export class Game {
                     homeEmoji = `<:${tm.name}:${tm.id}>`
                 };
             };
-
-            console.log(awayEmoji);
-            console.log(homeEmoji);
             
             const awayLine: string = `${awayEmoji} ${awayAbbr} ${awayRuns} (${awayWin}-${awayLoss})`;
             const homeLine: string = `${homeEmoji} ${homeAbbr} ${homeRuns} (${homeWin}-${homeLoss})`;

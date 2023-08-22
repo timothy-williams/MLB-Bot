@@ -47,6 +47,9 @@ export async function editFollowupMessage(endpointInfo: IDiscordEndpointInfo,
 
     try {
       const url = `https://discord.com/api/v${endpointInfo.apiVersion ?? '10'}/webhooks/${endpointInfo.applicationId}/${interactionToken}/messages/${messageID}`
+      console.log(url);
+      console.log(data);
+      console.log(authConfig);
       return (await axios.patch(url, data, authConfig));
     } catch (exception) {
       console.log(`There was an error editing the response: ${exception}`);
@@ -62,7 +65,7 @@ export async function getGuildEmojis(endpointInfo: IDiscordEndpointInfo): Promis
   };
   try {
     const url = `https://discord.com/api/v${endpointInfo.apiVersion ?? '10'}/guilds/${endpointInfo.guildId}/emojis`;
-    return await axios.get(url, authConfig)
+    return await axios.get(url, authConfig);
   } catch (exception) {
     console.log(`There was an error retrieving this server's emojis: ${exception}`);
     return false;
