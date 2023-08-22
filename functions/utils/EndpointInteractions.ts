@@ -31,7 +31,7 @@ export async function sendFollowupMessage(endpointInfo: IDiscordEndpointInfo,
   }
 }
 
-export async function getGuildEmojis(endpointInfo: IDiscordEndpointInfo): Promise<string | boolean> {
+export async function getGuildEmojis(endpointInfo: IDiscordEndpointInfo): Promise<any> {
   const authConfig = {
       headers: {
         'Authorization': `Bot ${endpointInfo.authToken}`

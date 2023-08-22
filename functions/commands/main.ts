@@ -3,6 +3,7 @@ import * as emoji from 'node-emoji';
 import { getGuildEmojis } from '../utils/EndpointInteractions';
 import { getDiscordSecrets } from '../utils/DiscordSecrets';
 import { teamAbbr } from '../constants/TeamAbbr';
+import { IDiscordJsonBody } from "../../lib/types/discord";
 
 export class Game {
     private gamePk: string;
@@ -52,8 +53,8 @@ export class Game {
                 applicationId: undefined,
                 guildId: discordSecret?.guild_id
               };
-            const getTeamEmojis = await getGuildEmojis(endpointInfo);
-            console.log(getTeamEmojis);
+            const getTeamEmojis: IDiscordJsonBody = await getGuildEmojis(endpointInfo);
+            console.log(getTeamEmojis.data);
 
             const teamEmojis: Record<string, string> = {
                 'LAA': '<:mlb_angels:1138888639682728107>',
