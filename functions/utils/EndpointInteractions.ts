@@ -47,9 +47,6 @@ export async function editFollowupMessage(endpointInfo: IDiscordEndpointInfo,
 
     try {
       const url = `https://discord.com/api/v${endpointInfo.apiVersion ?? '10'}/webhooks/${endpointInfo.applicationId}/${interactionToken}/messages/${messageID}`
-      console.log(url);
-      console.log(data);
-      console.log(authConfig);
       return (await axios.patch(url, data, authConfig));
     } catch (exception) {
       console.log(`There was an error editing the response: ${exception}`);

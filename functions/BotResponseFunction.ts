@@ -1,6 +1,6 @@
 import { Context, Callback } from "aws-lambda";
 import { getDiscordSecrets } from "./utils/DiscordSecrets";
-import { sendFollowupMessage, editFollowupMessage } from "./utils/EndpointInteractions";
+import { sendFollowupMessage } from "./utils/EndpointInteractions";
 import {
   IDiscordEventRequest,
   IDiscordCommandStructure
@@ -87,24 +87,6 @@ export async function handler(
     commandValue: commandStructure.commandValue
   };
   */
-  const initialResponse = {
-    tts: false,
-    // *** Response ***
-    content: 'Fetching data...',
-    embeds: [],
-    allowedMentions: [],
-  };
-  console.log(`Response:\n${JSON.stringify(initialResponse)}`)
-
-  if (
-    event.jsonBody.token &&
-    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, initialResponse))
-  ) {
-    console.log("Initial response successful!");
-  } else {
-    console.log("Failed to send initial response!");
-  }
-
   switch (commandStructure.commandName) {
     case "todays_scores":
       discord_content = await todays_scores();
@@ -114,23 +96,30 @@ export async function handler(
       break;
   };
 
-  const newResponse = {
+  if ( discord_content.length > 4096 ) {
+    console.log("ERROR - max character length exceeded.");
+    console.log(`Message length: ${discord_content.length}`);
+    return "400";
+  }
+
+  const response = {
     tts: false,
     // *** Response ***
-    content: discord_content,
-    embeds: [],
+    content: '',
+    embeds: [{
+      description: discord_content
+    }],
     allowedMentions: [],
   };
-  console.log(`Response:\n${JSON.stringify(newResponse)}`)
+  console.log(`Follow-up message:\n${JSON.stringify(response)}`)
 
   if (
     event.jsonBody.token &&
-    (await editFollowupMessage(endpointInfo, event.jsonBody.token, newResponse,
-      event.jsonBody.channel.last_message_id))
+    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, response))
   ) {
-    console.log("Content response successful!");
+    console.log("Follow-up message successful!");
   } else {
-    console.log("Failed to send content response!");
+    console.log("Failed to send follow-up message!");
   }
 
   const putItem = async () => {
