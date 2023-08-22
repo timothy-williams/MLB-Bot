@@ -3,6 +3,7 @@
 - Technical
     - [ ] Refactor custom emoji code
 - Design
+    - [ ] Fix time conversion (currently displaying UTC)
     - [ ] Maybe re-design `/todays_scores` command for better mobile readability
 ### To-do
 - Technical

@@ -26,14 +26,17 @@ export class Game {
             // Away & home team info
             const away = gm.gameData.teams.away;
             const home = gm.gameData.teams.home;
-            const awayName = away.teamName.toLowerCase().replace(/\s+/g, ' ');
-            const homeName = home.teamName.toLowerCase().replace(/\s+/g, ' ');
+            const awayName = away.teamName.toLowerCase().replace(/\s+/g, '');
+            const homeName = home.teamName.toLowerCase().replace(/\s+/g, '');
             const awayAbbr: string = away.abbreviation;
             const homeAbbr: string = home.abbreviation;
             const awayWin: number = away.record.leagueRecord.wins;
             const awayLoss: number = away.record.leagueRecord.losses;
             const homeWin: number = home.record.leagueRecord.wins;
             const homeLoss: number = home.record.leagueRecord.losses;
+
+            console.log(awayName);
+            console.log(homeName);
 
             let awayRuns: number;
             let homeRuns: number;
