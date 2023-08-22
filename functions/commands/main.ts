@@ -26,8 +26,8 @@ export class Game {
             // Away & home team info
             const away = gm.gameData.teams.away;
             const home = gm.gameData.teams.home;
-            const awayName = away.teamName.toLowerCase().replace(/\s+/g, '');
-            const homeName = home.teamName.toLowerCase().replace(/\s+/g, '');
+            const awayName = away.clubName.toLowerCase().replace(/\s+/g, '');
+            const homeName = home.clubName.toLowerCase().replace(/\s+/g, '');
             const awayAbbr: string = away.abbreviation;
             const homeAbbr: string = home.abbreviation;
             const awayWin: number = away.record.leagueRecord.wins;
@@ -69,41 +69,9 @@ export class Game {
                     homeEmoji = `<:${tm.name}:${tm.id}>`
                 };
             };
+
             console.log(awayEmoji);
             console.log(homeEmoji);
-
-            /*const teamEmojis: Record<string, string> = {
-                'LAA': '<:mlb_angels:1138888639682728107>',
-                'HOU': '<:mlb_astros:1138888640991334491>',
-                'OAK': '<:mlb_athletics:1138888642346094632>',
-                'TOR': '<:mlb_bluejays:1138888643143012476>',
-                'ATL': '<:mlb_braves:1138888644288073828>',
-                'MIL': '<:mlb_brewers:1138888926849933314>',
-                'STL': '<:mlb_cardinals:1138888941135745145>',
-                'CHC': '<:mlb_cubs:1138888956868579388>',
-                'AZ': '<:mlb_diamondbacks:1138888969761869865>',
-                'LAD': '<:mlb_dodgers:1138888984479666286>',
-                'SF': '<:mlb_giants:1138889008198451240>',
-                'CLE': '<:mlb_guardians:1138889033745969273>',
-                'SEA': '<:mlb_mariners:1138889047582965801>',
-                'MIA': '<:mlb_marlins:1138889060778258583>',
-                'NYM': '<:mlb_mets:1138889073830928505>',
-                'WSH': '<:mlb_nationals:1138889087294652446>',
-                'BAL': '<:mlb_orioles:1138889138398040064>',
-                'SD': '<:mlb_padres:1138889153946333214>',
-                'PHI': '<:mlb_phillies:1138889169154875402>',
-                'PIT': '<:mlb_pirates:1138889185802064043>',
-                'TEX': '<:mlb_rangers:1138889199169306726>',
-                'TB': '<:mlb_rays:1138889211534119093>',
-                'CIN': '<:mlb_reds:1138889225052368907>',
-                'BOS': '<:mlb_redsox:1138889237777883136>',
-                'COL': '<:mlb_rockies:1138889251182891048>',
-                'KC': '<:mlb_royals:1138889264474632223>',
-                'DET': '<:mlb_tigers:1138889277095280707>',
-                'MIN': '<:mlb_twins:1138889294090604726>',
-                'CWS': '<:mlb_whitesox:1138889308854550640>',
-                'NYY': '<:mlb_yankees:1138889323408797787>'
-            };*/
             
             const awayLine: string = `${awayEmoji} ${awayAbbr} ${awayRuns} (${awayWin}-${awayLoss})`;
             const homeLine: string = `${homeEmoji} ${homeAbbr} ${homeRuns} (${homeWin}-${homeLoss})`;

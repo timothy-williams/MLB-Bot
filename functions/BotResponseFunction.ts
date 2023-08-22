@@ -9,7 +9,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { todays_scores } from './commands/todays_scores';
 
-const AWS = require("aws-sdk");
+//const AWS = require("aws-sdk");
 const commandHistoryTableName = process.env.CommandHistoryTableName;
 const region = process.env.AWS_REGION;
 const ddbClient = new DynamoDBClient({ region: region });
@@ -56,21 +56,21 @@ export async function handler(
     guildId: event.jsonBody.guild_id,
   };
 
-  // const commandValue = event.jsonBody.data?.options?.[0]?.value;
-  // const userIdOfCommandUsed = event.jsonBody.member?.user.id;
+  /*
+  const commandValue = event.jsonBody.data?.options?.[0]?.value;
+  const userIdOfCommandUsed = event.jsonBody.member?.user.id;
 
-  // TODO - refactor this
+  
   const smeez_user_id = "176503559121141760";
   console.log(`Command Structure:\n${JSON.stringify(commandStructure)}`);
-
   var admin_status = false;
-
   if (commandStructure.userId === smeez_user_id) {
     admin_status = true;
   }
 
-  // const userNameOfCommandUsed = event.jsonBody.member?.user.username;
-  // const guildIdOfCommandUsed = event.jsonBody.guild_id;
+  const userNameOfCommandUsed = event.jsonBody.member?.user.username;
+  const guildIdOfCommandUsed = event.jsonBody.guild_id;
+  */
 
   // Snippets for the response below:
   // Command: ${event.jsonBody.data?.options?.[0]?.value}
@@ -78,13 +78,15 @@ export async function handler(
   // GuildId: ${event.jsonBody.guild_id}`,
 
   var discord_content = "Default message - this should never appear.";
-  // const no_permissions_error_message = "You do not have permission to use this command.";
 
+  /*
+  const no_permissions_error_message = "You do not have permission to use this command.";
   const stepFunctions = new AWS.StepFunctions();
   const input = {
     commandName: commandStructure.commandName,
     commandValue: commandStructure.commandValue
   };
+  */
 
   switch (commandStructure.commandName) {
     case "todays_scores":
