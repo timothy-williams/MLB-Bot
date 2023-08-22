@@ -1,5 +1,8 @@
 import axios from 'axios';
 import * as emoji from 'node-emoji';
+import { getGuildEmojis } from '../utils/EndpointInteractions';
+import { getDiscordSecrets } from '../utils/DiscordSecrets';
+import { teamAbbr } from '../constants/TeamAbbr';
 
 export class Game {
     private gamePk: string;
@@ -43,6 +46,15 @@ export class Game {
             }
             
             // Emojis
+            const discordSecret = await getDiscordSecrets();
+            const endpointInfo = {
+                authToken: discordSecret?.token,
+                applicationId: undefined,
+                guildId: discordSecret?.guild_id
+              };
+            const getTeamEmojis = await getGuildEmojis(endpointInfo);
+            console.log(getTeamEmojis);
+
             const teamEmojis: Record<string, string> = {
                 'LAA': '<:mlb_angels:1138888639682728107>',
                 'HOU': '<:mlb_astros:1138888640991334491>',

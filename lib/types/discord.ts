@@ -6,6 +6,7 @@ export interface IDiscordSecrets {
     application_id: string;
     client_id: string;
     public_key: string;
+    guild_id: string;
   }
   
   /**
@@ -85,6 +86,7 @@ export interface IDiscordSecrets {
     apiVersion?: string;
     authToken: string | undefined;
     applicationId: string | undefined;
+    guildId: string | undefined;
   }
   
   /**

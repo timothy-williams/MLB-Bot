@@ -44,6 +44,7 @@ export async function handler(
   const endpointInfo = {
     authToken: discordSecret?.token,
     applicationId: discordSecret?.application_id,
+    guildId: undefined
   };
   console.log(`Endpoint info:\n${JSON.stringify(endpointInfo)}`)
 

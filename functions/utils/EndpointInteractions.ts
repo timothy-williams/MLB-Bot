@@ -30,3 +30,18 @@ export async function sendFollowupMessage(endpointInfo: IDiscordEndpointInfo,
     return false;
   }
 }
+
+export async function getGuildEmojis(endpointInfo: IDiscordEndpointInfo) {
+  const authConfig = {
+      headers: {
+        'Authorization': `Bot ${endpointInfo.authToken}`
+      }
+  };
+  try {
+    const url = `https://discord.com/api/v${endpointInfo.apiVersion ?? '10'}/guilds/${endpointInfo.guildId}/emojis`;
+    return await axios.get(url, authConfig)
+  } catch (exception) {
+    console.log(`There was an error retrieving this server's emojis: ${exception}`);
+    return false;
+  }
+}
