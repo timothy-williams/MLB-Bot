@@ -2,8 +2,6 @@ import axios from 'axios';
 import * as emoji from 'node-emoji';
 import { getGuildEmojis } from '../utils/EndpointInteractions';
 import { getDiscordSecrets } from '../utils/DiscordSecrets';
-import { teamAbbr } from '../constants/TeamAbbr';
-import { IDiscordJsonBody } from "../../lib/types/discord";
 
 export class Game {
     private gamePk: string;
@@ -28,6 +26,8 @@ export class Game {
             // Away & home team info
             const away = gm.gameData.teams.away;
             const home = gm.gameData.teams.home;
+            const awayName = away.teamName.strToLowercase().split(" ").join();
+            const homeName = home.teamName.strToLowercase().split(" ").join();
             const awayAbbr: string = away.abbreviation;
             const homeAbbr: string = home.abbreviation;
             const awayWin: number = away.record.leagueRecord.wins;
@@ -53,10 +53,23 @@ export class Game {
                 applicationId: undefined,
                 guildId: discordSecret?.guild_id
               };
-            const getTeamEmojis: IDiscordJsonBody = await getGuildEmojis(endpointInfo);
-            console.log(getTeamEmojis.data);
+            const getTeamEmojis = await getGuildEmojis(endpointInfo);
+            const teamEmojis = getTeamEmojis.data;
 
-            const teamEmojis: Record<string, string> = {
+            let awayEmoji: string = '';
+            let homeEmoji: string = '';
+            for ( const tm of teamEmojis ) {
+                if ( `mlb_${awayName}` == tm.name ) {
+                    awayEmoji = `<:${tm.name}:${tm.id}>`
+                };
+                if ( `mlb_${homeName}` == tm.name ) {
+                    homeEmoji = `<:${tm.name}:${tm.id}>`
+                };
+            };
+            console.log(awayEmoji);
+            console.log(homeEmoji);
+
+            /*const teamEmojis: Record<string, string> = {
                 'LAA': '<:mlb_angels:1138888639682728107>',
                 'HOU': '<:mlb_astros:1138888640991334491>',
                 'OAK': '<:mlb_athletics:1138888642346094632>',
@@ -87,10 +100,8 @@ export class Game {
                 'MIN': '<:mlb_twins:1138889294090604726>',
                 'CWS': '<:mlb_whitesox:1138889308854550640>',
                 'NYY': '<:mlb_yankees:1138889323408797787>'
-            };
+            };*/
             
-            const awayEmoji: string = teamEmojis[awayAbbr];
-            const homeEmoji: string = teamEmojis[homeAbbr];
             const awayLine: string = `${awayEmoji} ${awayAbbr} ${awayRuns} (${awayWin}-${awayLoss})`;
             const homeLine: string = `${homeEmoji} ${homeAbbr} ${homeRuns} (${homeWin}-${homeLoss})`;
 
