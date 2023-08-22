@@ -1,6 +1,6 @@
 import { Context, Callback } from "aws-lambda";
 import { getDiscordSecrets } from "./utils/DiscordSecrets";
-import { sendFollowupMessage } from "./utils/EndpointInteractions";
+import { sendFollowupMessage, editFollowupMessage } from "./utils/EndpointInteractions";
 import {
   IDiscordEventRequest,
   IDiscordCommandStructure
@@ -53,7 +53,7 @@ export async function handler(
     userId: event.jsonBody.member?.user.id,
     commandName: event.jsonBody.data?.name,
     commandValue: event.jsonBody.data?.options?.[0]?.value,
-    guildId: event.jsonBody.guild_id,
+    guildId: event.jsonBody.guild_id
   };
 
   /*
@@ -87,6 +87,23 @@ export async function handler(
     commandValue: commandStructure.commandValue
   };
   */
+  const initialResponse = {
+    tts: false,
+    // *** Response ***
+    content: 'Fetching data...',
+    embeds: [],
+    allowedMentions: [],
+  };
+  console.log(`Response:\n${JSON.stringify(initialResponse)}`)
+
+  if (
+    event.jsonBody.token &&
+    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, initialResponse))
+  ) {
+    console.log("Initial response successful!");
+  } else {
+    console.log("Failed to send initial response!");
+  }
 
   switch (commandStructure.commandName) {
     case "todays_scores":
@@ -97,22 +114,23 @@ export async function handler(
       break;
   };
 
-  const response = {
+  const newResponse = {
     tts: false,
     // *** Response ***
     content: discord_content,
     embeds: [],
     allowedMentions: [],
   };
-  console.log(`Response:\n${JSON.stringify(response)}`)
+  console.log(`Response:\n${JSON.stringify(newResponse)}`)
 
   if (
     event.jsonBody.token &&
-    (await sendFollowupMessage(endpointInfo, event.jsonBody.token, response))
+    (await editFollowupMessage(endpointInfo, event.jsonBody.token, newResponse,
+      event.jsonBody.channel.last_message_id))
   ) {
-    console.log("Responded successfully!");
+    console.log("Content response successful!");
   } else {
-    console.log("Failed to send response!");
+    console.log("Failed to send content response!");
   }
 
   const putItem = async () => {

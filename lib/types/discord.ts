@@ -58,6 +58,7 @@ export interface IDiscordSecrets {
     member?: IDiscordMember;
     type: number;
     version: number;
+    channel?: any;
   }
   
   /**

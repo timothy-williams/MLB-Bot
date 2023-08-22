@@ -31,6 +31,29 @@ export async function sendFollowupMessage(endpointInfo: IDiscordEndpointInfo,
   }
 }
 
+export async function editFollowupMessage(endpointInfo: IDiscordEndpointInfo,
+  interactionToken: string, responseData: IDiscordResponseData, 
+  messageID: string): Promise<any> {
+    const { allowedMentions, ...strippedResponseData } = responseData;
+    const authConfig = {
+      headers: {
+        'Authorization': `Bot ${endpointInfo.authToken}`
+      }
+    };
+    const data = {
+      ...strippedResponseData,
+      allowed_mentions: allowedMentions
+    };
+
+    try {
+      const url = `https://discord.com/api/v${endpointInfo.apiVersion ?? '10'}/webhooks/${endpointInfo.applicationId}/${interactionToken}/messages/${messageID}`
+      return (await axios.patch(url, data, authConfig));
+    } catch (exception) {
+      console.log(`There was an error editing the response: ${exception}`);
+      return false;
+    }
+}
+
 export async function getGuildEmojis(endpointInfo: IDiscordEndpointInfo): Promise<any> {
   const authConfig = {
       headers: {
