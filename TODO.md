@@ -1,18 +1,19 @@
 # MLB-Bot To-Do list
 ### In Progress/Next
 - Technical
-    - [ ] Refactor custom emoji code
+    - [ ] N/A
 - Design
     - [ ] Fix time conversion (currently displaying UTC)
-    - [ ] Maybe re-design `/todays_scores` command for better mobile readability
 ### To-do
 - Technical
     - [ ] N/A
 - Design
+    - [ ] Mess with embed elements to pretty up displayed information
     - [ ] Add winning and losing pitchers with ERA and W/L record to `scoreboard`
 ### Planned Features
 - `/lastgame [team]`: display box score of selected team's last game 
 ### Done
+- [x] Refactor custom emoji code (8/22)
 - [x] Build the bot serverless (8/21)
 - [x] Implement CI/CD workflow (8/21)
 ### Requests
