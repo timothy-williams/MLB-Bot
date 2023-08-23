@@ -98,7 +98,6 @@ export class Game {
                 timeZone: 'America/Los_Angeles'
             });
 
-
             const timeEmoji: string = emoji.emojify(":clock3:");
 
             let inning: number;
@@ -117,12 +116,15 @@ export class Game {
                     timeZone: 'America/Los_Angeles'
                 });
             } else {
-                return `${score} • ${timeEmoji} ${schedPST} PST`;
+                return `${score} • ${timeEmoji} ${schedPST}`;
             }
 
             // More formatting; current inning, extra innings, etc.
             if (abstract === 'Live') {
-                const half: string = gm.liveData.linescore.inningHalf;
+                var half: string = gm.liveData.linescore.inningHalf;
+                if ( half == 'Bottom' ) {
+                    half = 'Bot';
+                };
                 score = `${statusEmoji} ${status} - ${half} ${inning} • ${awayLine} @ ${homeLine}`;
             } else if (inning > 9 && abstract === 'Final') {
                 score = `${statusEmoji} ${status} (${inning}) • ${awayLine} @ ${homeLine}`;
@@ -131,11 +133,11 @@ export class Game {
             let intLength: number;
 
             if (status.startsWith('Suspended')) {
-                return `${score} • ${timeEmoji} ${fpPST} PST`;
+                return `${score} • ${timeEmoji} ${fpPST}`;
             } else if (status.startsWith('Final') || status.startsWith('Game Over')) {
                 intLength = gm.gameData.gameInfo.gameDurationMinutes;
             } else {
-                return `${score} • ${timeEmoji} ${fpPST} PST`;
+                return `${score} • ${timeEmoji} ${fpPST}`;
             }
 
             // Length of game in hours and minutes
@@ -144,7 +146,7 @@ export class Game {
             const length = `${hours}:${minutes}`;
 
             // Last formatting
-            const gameTimeComplete: string = `${timeEmoji} ${fpPST} PST - Length: ${length}`;
+            const gameTimeComplete: string = `${timeEmoji} ${fpPST} - Length: ${length}`;
             const finalDetailed: string = `${score} • ${gameTimeComplete}`
             return finalDetailed;
 

@@ -94,7 +94,7 @@ export async function handler(
   switch (commandStructure.commandName) {
     case "todays_scores":
       discord_content = await todays_scores();
-      embed_title = `MLB Games from today - ${today}`
+      embed_title = `MLB Games Today - ${today} (PST)`
       embed_url = 'https://www.mlb.com/scores';
       break;
     default:
