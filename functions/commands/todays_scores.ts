@@ -12,7 +12,6 @@ export async function todays_scores() {
 
     // Today's datetime
     const today: string = format(new Date(), 'yyyy-MM-dd');
-    const todayVerbose: string = `**${format(new Date(), 'MMMM d, yyyy')}**`;
     const endpoint: string = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}`;
     
     try {
@@ -39,10 +38,7 @@ export async function todays_scores() {
     }
 
     // Formatting
-    const diff: number = Math.floor((86 - todayVerbose.length) / 2);
-    const padding: string = '-'.repeat(diff);
-    const todayMsg: string = `${padding}${todayVerbose}${padding}`;
-    const message: string = `${todayMsg}\n${[...live, ...scheduled, ...final, ...other].join('\n')}`;
+    const message: string = [...live, ...scheduled, ...final, ...other].join('\n');
     const finalMessage: string = message.slice(0, -1);
     
     console.log(`Todays's scores:\n${finalMessage}`);

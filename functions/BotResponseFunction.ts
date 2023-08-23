@@ -8,6 +8,7 @@ import {
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { todays_scores } from './commands/todays_scores';
+import { format } from "date-fns";
 
 //const AWS = require("aws-sdk");
 const commandHistoryTableName = process.env.CommandHistoryTableName;
@@ -77,7 +78,10 @@ export async function handler(
   // Username: ${event.jsonBody.member?.user.username}
   // GuildId: ${event.jsonBody.guild_id}`,
 
-  var discord_content = "Default message - this should never appear.";
+  const today = format(new Date(), 'MMMM d, yyyy');
+  var discord_content = "Default message";
+  var embed_title = "Default title";
+  var embed_url = "Default URL";
 
   /*
   const no_permissions_error_message = "You do not have permission to use this command.";
@@ -90,6 +94,8 @@ export async function handler(
   switch (commandStructure.commandName) {
     case "todays_scores":
       discord_content = await todays_scores();
+      embed_title = `MLB Games from today - ${today}`
+      embed_url = 'https://www.mlb.com/scores';
       break;
     default:
       discord_content = "Invalid command. Please try again.";
@@ -107,7 +113,10 @@ export async function handler(
     // *** Response ***
     content: '',
     embeds: [{
-      description: discord_content
+      description: discord_content,
+      title: embed_title,
+      url: embed_url,
+      color: 65517
     }],
     allowedMentions: [],
   };
