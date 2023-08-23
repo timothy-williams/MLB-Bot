@@ -117,7 +117,7 @@ export class Game {
                     timeZone: 'America/Los_Angeles'
                 });
             } else {
-                return `${score} • ${timeEmoji} ${schedPST}`;
+                return `${score} • ${timeEmoji} ${schedPST} PST`;
             }
 
             // More formatting; current inning, extra innings, etc.
@@ -131,11 +131,11 @@ export class Game {
             let intLength: number;
 
             if (status.startsWith('Suspended')) {
-                return `${score} • ${timeEmoji} ${fpPST}`;
+                return `${score} • ${timeEmoji} ${fpPST} PST`;
             } else if (status.startsWith('Final') || status.startsWith('Game Over')) {
                 intLength = gm.gameData.gameInfo.gameDurationMinutes;
             } else {
-                return `${score} • ${timeEmoji} ${fpPST}`;
+                return `${score} • ${timeEmoji} ${fpPST} PST`;
             }
 
             // Length of game in hours and minutes
@@ -144,7 +144,7 @@ export class Game {
             const length = `${hours}:${minutes}`;
 
             // Last formatting
-            const gameTimeComplete: string = `${timeEmoji} ${fpPST} - Length: ${length}`;
+            const gameTimeComplete: string = `${timeEmoji} ${fpPST} PST - Length: ${length}`;
             const finalDetailed: string = `${score} • ${gameTimeComplete}`
             return finalDetailed;
 
