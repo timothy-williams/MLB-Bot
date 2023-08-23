@@ -91,17 +91,18 @@ export class Game {
             // Time conversion for scheduled games
             const schedString: string = gm.gameData.datetime.dateTime;
             const schedDT = new Date(schedString);
-            const schedLocal: string = schedDT.toLocaleString('en-US', {
+            const schedPST: string = schedDT.toLocaleString('en-US', {
                 hour: 'numeric',
                 minute: 'numeric',
                 hour12: true,
-                timeZoneName: 'short'
+                timeZone: 'America/Los_Angeles'
             });
+
 
             const timeEmoji: string = emoji.emojify(":clock3:");
 
             let inning: number;
-            let fpLocal: string;
+            let fpPST: string;
 
             if ('currentInning' in gm.liveData.linescore) {
                 inning = gm.liveData.linescore.currentInning;
@@ -109,14 +110,14 @@ export class Game {
                 // Time conversion for live and completed games
                 const fpString: string = gm.gameData.gameInfo.firstPitch;
                 const fpDT = new Date(fpString);
-                fpLocal = fpDT.toLocaleString('en-US', {
+                fpPST = fpDT.toLocaleString('en-US', {
                     hour: 'numeric',
                     minute: 'numeric',
                     hour12: true,
-                    timeZoneName: 'short'
+                    timeZone: 'America/Los_Angeles'
                 });
             } else {
-                return `${score} • ${timeEmoji} ${schedLocal}`;
+                return `${score} • ${timeEmoji} ${schedPST}`;
             }
 
             // More formatting; current inning, extra innings, etc.
@@ -130,11 +131,11 @@ export class Game {
             let intLength: number;
 
             if (status.startsWith('Suspended')) {
-                return `${score} • ${timeEmoji} ${fpLocal}`;
+                return `${score} • ${timeEmoji} ${fpPST}`;
             } else if (status.startsWith('Final') || status.startsWith('Game Over')) {
                 intLength = gm.gameData.gameInfo.gameDurationMinutes;
             } else {
-                return `${score} • ${timeEmoji} ${fpLocal}`;
+                return `${score} • ${timeEmoji} ${fpPST}`;
             }
 
             // Length of game in hours and minutes
@@ -143,7 +144,7 @@ export class Game {
             const length = `${hours}:${minutes}`;
 
             // Last formatting
-            const gameTimeComplete: string = `${timeEmoji} ${fpLocal} - Length: ${length}`;
+            const gameTimeComplete: string = `${timeEmoji} ${fpPST} - Length: ${length}`;
             const finalDetailed: string = `${score} • ${gameTimeComplete}`
             return finalDetailed;
 

@@ -45,5 +45,6 @@ export async function todays_scores() {
     const message: string = `${todayMsg}\n${[...live, ...scheduled, ...final, ...other].join('\n')}`;
     const finalMessage: string = message.slice(0, -1);
     
+    console.log(`Todays's scores:\n${finalMessage}`);
     return finalMessage;
 }
