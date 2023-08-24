@@ -91,7 +91,7 @@ export async function handler(
     commandValue: commandStructure.commandValue
   };
   */
-  switch (commandStructure.commandName) {
+  switch ( commandStructure.commandName ) {
     case "todays_scores":
       discord_content = await todays_scores();
       embed_title = `MLB Games Today - ${today} (PST)`

@@ -11,35 +11,36 @@ export async function todays_scores() {
     const other: string[] = [];
 
     // Today's datetime
-    const today: string = format(new Date(), 'yyyy-MM-dd');
-    const endpoint: string = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}`;
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const endpoint = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}`;
     
     try {
         const res = await axios.get(endpoint);
         const games = res.data.dates[0].games; // All games from today
 
-        for (const g of games) {
+        for ( const g of games ) {
             const gameState: string = g.status.abstractGameState;
             const scoreboard = await new Game(g.gamePk).scoreboard();
 
             // Sort games by game state and retrieve scoreboard() for each
-            if (gameState === 'Live') {
-                live.push(scoreboard + '\n');
-            } else if (gameState === 'Preview') {
-                scheduled.push(scoreboard + '\n');
-            } else if (gameState === 'Final') {
-                final.push(scoreboard + '\n');
-            } else {
-                other.push(scoreboard + '\n');
-            }
+            switch ( gameState ) {
+                case "Live":
+                    live.push(scoreboard + '\n');
+                case "Preview":
+                    scheduled.push(scoreboard + '\n');
+                case "Final":
+                    final.push(scoreboard + '\n');
+                default:
+                    other.push(scoreboard + '\n');
+            };
         }
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 
     // Formatting
-    const message: string = [...live, ...scheduled, ...final, ...other].join('\n');
-    const finalMessage: string = message.slice(0, -1);
+    const message = [...live, ...scheduled, ...final, ...other].join('\n');
+    const finalMessage = message.slice(0, -1);
     
     console.log(`Todays's scores:\n${finalMessage}`);
     return finalMessage;
