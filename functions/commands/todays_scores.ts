@@ -23,16 +23,15 @@ export async function todays_scores() {
             const scoreboard = await new Game(g.gamePk).scoreboard();
 
             // Sort games by game state and retrieve scoreboard() for each
-            switch ( gameState ) {
-                case "Live":
-                    live.push(scoreboard + '\n');
-                case "Preview":
-                    scheduled.push(scoreboard + '\n');
-                case "Final":
-                    final.push(scoreboard + '\n');
-                default:
-                    other.push(scoreboard + '\n');
-            };
+            if (gameState === 'Live') {
+                live.push(scoreboard + '\n');
+            } else if (gameState === 'Preview') {
+                scheduled.push(scoreboard + '\n');
+            } else if (gameState === 'Final') {
+                final.push(scoreboard + '\n');
+            } else {
+                other.push(scoreboard + '\n');
+            }
         }
     } catch (error) {
         console.error('Error fetching data:', error);
