@@ -1,4 +1,6 @@
 # Change Log
+## 2023-8-25
+- Changed `/todays_scores`'s timezone to use PST/PDT instead of UTC when retrieving the current date
 ## 2023-8-24
 - Condensed scoreboard elements to better fit within the embed
 ## 2023-8-23

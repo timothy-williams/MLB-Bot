@@ -1,5 +1,5 @@
 import { Game } from './main';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 import axios from 'axios';
 
 // Display all scores from today - live, scheduled, and completed
@@ -12,9 +12,8 @@ export async function todays_scores() {
 
     // Today's datetime
     const todayStr = new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles"});
-    const today = format(parse(todayStr, 'MM-dd-yyyy', new Date()), 'yyyy-MM-dd');
+    const today = format((new Date(todayStr)), 'yyyy-MM-dd');
     const endpoint = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}`;
-    console.log(endpoint);
     
     try {
         const res = await axios.get(endpoint);
