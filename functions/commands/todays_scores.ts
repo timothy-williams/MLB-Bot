@@ -1,5 +1,5 @@
 import { Game } from './main';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import axios from 'axios';
 
 // Display all scores from today - live, scheduled, and completed
@@ -11,8 +11,10 @@ export async function todays_scores() {
     const other: string[] = [];
 
     // Today's datetime
-    const today = format(new Date(), 'yyyy-MM-dd');
+    const todayStr = new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles"});
+    const today = format(parse(todayStr, 'MM-dd-yyyy', new Date()), 'yyyy-MM-dd');
     const endpoint = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}`;
+    console.log(endpoint);
     
     try {
         const res = await axios.get(endpoint);
@@ -23,15 +25,20 @@ export async function todays_scores() {
             const scoreboard = await new Game(g.gamePk).scoreboard();
 
             // Sort games by game state and retrieve scoreboard() for each
-            if (gameState === 'Live') {
-                live.push(scoreboard + '\n');
-            } else if (gameState === 'Preview') {
-                scheduled.push(scoreboard + '\n');
-            } else if (gameState === 'Final') {
-                final.push(scoreboard + '\n');
-            } else {
-                other.push(scoreboard + '\n');
-            }
+            switch ( gameState ) {
+                case "Live":
+                    live.push(scoreboard + '\n');
+                    break;
+                case "Preview":
+                    scheduled.push(scoreboard + '\n');
+                    break;
+                case "Final":
+                    final.push(scoreboard + '\n');
+                    break;
+                default:
+                    other.push(scoreboard + '\n');
+                    break;
+            };
         }
     } catch (error) {
         console.error('Error fetching data:', error);

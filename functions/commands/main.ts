@@ -26,8 +26,8 @@ export class Game {
         const away = gm.gameData.teams.away;
         const home = gm.gameData.teams.home;
 
-        const awayName = away.clubName.toLowerCase().replace(/\s+/g, '');
-        const homeName = home.clubName.toLowerCase().replace(/\s+/g, '');
+        const awayName: string = away.clubName.toLowerCase().replace(/\s+/g, '');
+        const homeName: string = home.clubName.toLowerCase().replace(/\s+/g, '');
 
         const awayAbbr: string = away.abbreviation;
         const homeAbbr: string = home.abbreviation;

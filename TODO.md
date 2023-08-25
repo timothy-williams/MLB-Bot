@@ -1,14 +1,15 @@
 # MLB-Bot To-Do list
 ### In Progress/Next
-- Condense specific `scoreboard` elements to better fit within the embed
- - "In Progress" -> "Live"
- - "Bottom" -> "Bot"
+- Rewrite /todays_scores's date logic to change the timezone in which the current day of games would end
 ### To-do
-- Add winning and losing pitchers with ERA and W/L record to `scoreboard` <!--not sure about this one-->
+- Display "TBD" start times where necessary
 ### Planned Features
-- `/lastgame [team]`: display box score of selected team's last game 
+- `/lastgame [team]`: display box score of selected team's most recent completed game
 ### Known Bugs
+- Previously suspended games display original start time instead of resumed time
 - Doubleheaders in `/todays_scores` don't follow time-sorted order
+- Start times from previously suspended games are displayed in scoreboard instead of resumed game time
+- Games with a "TBD" start time should display as such
 ### Requests
 - Support `/todays_scores` parameters that sort by...
  - Winning score
