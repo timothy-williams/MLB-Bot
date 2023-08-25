@@ -104,9 +104,8 @@ export class Game {
         var score = `${statusEmoji} ${condenseStatus} ${awayLine} @ ${homeLine}`;
 
         // Time conversion for scheduled games
-        const schedString: string = gm.gameData.datetime.dateTime;
-        const schedDT = new Date(schedString);
-        const schedPST: string = schedDT.toLocaleString('en-US', {
+        const schedDT = new Date(gm.gameData.datetime.dateTime);
+        var schedPST: string = schedDT.toLocaleString('en-US', {
             hour: 'numeric',
             minute: 'numeric',
             hour12: true,
@@ -118,22 +117,32 @@ export class Game {
         // Check if game time is to be determind
         if ( TBD ) { return `${score} ${timeEmoji} TBD` }
 
-        let inning: number;
-        let fpPST: string;
+        var inning: number = 0;
+        var fpPST: string = '';
 
-        if ( 'currentInning' in gm.liveData.linescore ) {
+        if ( 'resumeDateTime' in gm.gameData.datetime ) { // If resuming/resumed
+            // Time conversion for previously suspended games
+            const resumeDT = new Date(gm.gameData.datetime.resumeDateTime);
+            schedPST = resumeDT.toLocaleString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+                timeZone: 'America/Los_Angeles'
+            });
+            fpPST = schedPST; // Change first pitch time to resumed time
+        } else if ( ( 'currentInning' in gm.liveData.linescore ) && // If Live
+            ! ( 'resumeDateTime' in gm.gameData.datetime ) ) {      // but not resumed
             inning = gm.liveData.linescore.currentInning;
             
             // Time conversion for live and completed games
-            const fpString: string = gm.gameData.gameInfo.firstPitch;
-            const fpDT = new Date(fpString);
+            const fpDT = new Date(gm.gameData.gameInfo.firstPitch);
             fpPST = fpDT.toLocaleString('en-US', {
                 hour: 'numeric',
                 minute: 'numeric',
                 hour12: true,
                 timeZone: 'America/Los_Angeles'
             });
-        } else {
+        } else { // If regular scheduled game
             return `${score} ${timeEmoji} ${schedPST}`;
         }
 
