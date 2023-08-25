@@ -1,13 +1,13 @@
 # MLB-Bot To-Do list
 ### In Progress/Next
-- Display "TBD" start times where necessary
+- For previously suspended games, display resumed time instead of original start time
 ### To-do
-- Previously suspended games display original start time instead of resumed time
+- `/todays_scores` - Fix time-sorting for days with doubleheaders
 ### Planned Features
 - `/lastgame [team]`: display box score of selected team's most recent completed game
-- For `/todays_scores`: dynamically retrieve timezone from the command user to display accurate current day
 ### Known Bugs
-- Doubleheaders in `/todays_scores` don't follow time-sorted order
+- Previously suspended games display original start time instead of resumed time
+- `/todays_scores` - doubleheaders don't follow time-sorted order
 ### Requests
 - Support `/todays_scores` parameters that sort by...
  - Winning score

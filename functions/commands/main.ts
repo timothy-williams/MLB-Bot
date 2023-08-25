@@ -21,6 +21,7 @@ export class Game {
         // Game status
         const status: string = gm.gameData.status.detailedState
         const abstract: string = gm.gameData.status.abstractGameState // Preview, Live, Final
+        const TBD: boolean = gm.gameData.status.startTimeTBD
 
         // Away & home team info
         const away = gm.gameData.teams.away;
@@ -63,10 +64,10 @@ export class Game {
         var awayEmoji = '';
         var homeEmoji = '';
         for ( const tm of teamEmojis ) {
-            if ( `mlb_${awayName}` == tm.name ) {
+            if ( `mlb_${awayName}` === tm.name ) {
                 awayEmoji = `<:${tm.name}:${tm.id}>`
             };
-            if ( `mlb_${homeName}` == tm.name ) {
+            if ( `mlb_${homeName}` === tm.name ) {
                 homeEmoji = `<:${tm.name}:${tm.id}>`
             };
         };
@@ -114,6 +115,9 @@ export class Game {
 
         const timeEmoji: string = emoji.emojify(":clock3:");
 
+        // Check if game time is to be determind
+        if ( TBD ) { return `${score} ${timeEmoji} TBD` }
+
         let inning: number;
         let fpPST: string;
 
@@ -136,7 +140,7 @@ export class Game {
         // More formatting; current inning, extra innings, etc.
         if ( abstract === 'Live' ) {
             var half: string = gm.liveData.linescore.inningHalf;
-            if ( half == 'Bottom' ) {
+            if ( half === 'Bottom' ) {
                 half = 'Bot';
             };
             score = `${statusEmoji} ${condenseStatus} • ${half} ${inning} ${awayLine} @ ${homeLine}`;
