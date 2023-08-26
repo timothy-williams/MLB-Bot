@@ -13,6 +13,20 @@ export class Game {
         this.endpoint = `https://statsapi.mlb.com/api/v1.1/game/${gamePk}/feed/live`;
     }
 
+    async getStartTime() {
+        const res = await axios.get(this.endpoint);
+        const gm = res.data
+        
+        if ( 'resumeDateTime' in gm.gameData.datetime ) {
+            return gm.gameData.datetime.resumeDateTime;
+        } else if ( ( 'currentInning' in gm.liveData.linescore ) &&
+            ! ( 'resumeDateTime' in gm.gameData.datetime ) ) {
+            return gm.gameData.gameInfo.firstPitch;
+        } else {
+            return gm.gameData.datetime.dateTime;
+        }
+    }
+
     // 📅 Status • :team_emoji_1: ABC 0 (100-62) @ :team_emoji_2: XYZ 0 (62-100) • 🕒 12:00 PM PST - Length: 2:30
     async scoreboard() {
         const res = await axios.get(this.endpoint);
@@ -115,7 +129,9 @@ export class Game {
         const timeEmoji: string = emoji.emojify(":clock3:");
 
         // Check if game time is to be determind
-        if ( TBD ) { return `${score} ${timeEmoji} TBD` }
+        if ( TBD && abstract === 'Preview' ) { 
+            return `${score} ${timeEmoji} TBD`
+        }
 
         var inning: number = 0;
         var fpPST: string = '';
