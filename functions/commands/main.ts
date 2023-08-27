@@ -5,17 +5,30 @@ import { getDiscordSecrets } from '../utils/DiscordSecrets';
 
 export class Game {
     private gamePk: string;
-    private endpoint: string;
+    private gameData: any;
 
     // Single game endpoint
     constructor(gamePk: string) {
         this.gamePk = gamePk;
-        this.endpoint = `https://statsapi.mlb.com/api/v1.1/game/${gamePk}/feed/live`;
+    }
+
+    // Fetch game data if not already fetched, then return the game data
+    private async getGameData() {
+        if (!this.gameData) {
+            try {
+                const endpoint = `https://statsapi.mlb.com/api/v1.1/game/${this.gamePk}/feed/live`;
+                const res = await axios.get(endpoint);
+                this.gameData = res.data;
+            } catch (error) {
+                console.error('Error fetching game data:', error);
+                throw error; // Handle the error further up the call stack
+            }
+        }
+        return this.gameData;
     }
 
     async getStartTime() {
-        const res = await axios.get(this.endpoint);
-        const gm = res.data
+        const gm = await this.getGameData();
         
         if ( 'resumeDateTime' in gm.gameData.datetime ) {
             return gm.gameData.datetime.resumeDateTime;
@@ -29,8 +42,7 @@ export class Game {
 
     // 📅 Status • :team_emoji_1: ABC 0 (100-62) @ :team_emoji_2: XYZ 0 (62-100) • 🕒 12:00 PM PST - Length: 2:30
     async scoreboard() {
-        const res = await axios.get(this.endpoint);
-        const gm = res.data
+        const gm = await this.getGameData();
 
         // Game status
         const status: string = gm.gameData.status.detailedState
