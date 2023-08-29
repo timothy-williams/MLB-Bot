@@ -3,7 +3,8 @@ import { getDiscordSecrets } from "./utils/DiscordSecrets";
 import { sendFollowupMessage } from "./utils/EndpointInteractions";
 import {
   IDiscordEventRequest,
-  IDiscordCommandStructure
+  IDiscordCommandStructure,
+  IDiscordResponseData
 } from "../lib/types/discord";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
@@ -82,8 +83,7 @@ export async function handler(
   const today = format(new Date(), 'MMMM d, yyyy');
   var discord_content = "";
   var embed_content = "";
-  var embed_title = "";
-  var embed_url = "";
+  let response!: IDiscordResponseData;
 
   /*
   const no_permissions_error_message = "You do not have permission to use this command.";
@@ -98,18 +98,47 @@ export async function handler(
   switch ( commandStructure.commandName ) {
     case "todays_scores":
       embed_content = await todays_scores();
-      embed_title = `MLB Games Today - ${today} (PST)`
-      embed_url = 'https://www.mlb.com/scores';
+      const embed_title = `MLB Games Today - ${today} (PST)`
+      const embed_url = 'https://www.mlb.com/scores';
+      response = {
+        tts: false,
+        content: '',
+        embeds: [{
+          description: embed_content,
+          title: embed_title,
+          url: embed_url,
+          color: 65517
+        }],
+        allowedMentions: [],
+      };
       break;
     case "last_game":
       if (input.commandValue !== undefined) {
           discord_content = await last_game(input.commandValue);
+          response = {
+            tts: false,
+            content: discord_content,
+            embeds: [],
+            allowedMentions: [],
+          };
       } else {
-          discord_content = "Missing command value. Please provide a value for the 'last_game' command.";
+          discord_content = "Please provide a league and team name.";
+          response = {
+            tts: false,
+            content: discord_content,
+            embeds: [],
+            allowedMentions: [],
+          };
       }
       break;
     default:
       discord_content = "Invalid command. Please try again.";
+      response = {
+        tts: false,
+        content: discord_content,
+        embeds: [],
+        allowedMentions: [],
+      };
       break;
   };
 
@@ -118,18 +147,6 @@ export async function handler(
     return "400";
   }
 
-  const response = {
-    tts: false,
-    // *** Response ***
-    content: discord_content,
-    embeds: [{
-      description: embed_content,
-      title: embed_title,
-      url: embed_url,
-      color: 65517
-    }],
-    allowedMentions: [],
-  };
   console.log(`Follow-up message:\n${JSON.stringify(response)}`)
 
   if (
