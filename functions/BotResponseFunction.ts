@@ -80,9 +80,10 @@ export async function handler(
   // GuildId: ${event.jsonBody.guild_id}`,
 
   const today = format(new Date(), 'MMMM d, yyyy');
-  var discord_content = "Default message";
-  var embed_title = "Default title";
-  var embed_url = "https://www.mlb.com/scores";
+  var discord_content = "";
+  var embed_content = "";
+  var embed_title = "";
+  var embed_url = "";
 
   /*
   const no_permissions_error_message = "You do not have permission to use this command.";
@@ -96,7 +97,7 @@ export async function handler(
 
   switch ( commandStructure.commandName ) {
     case "todays_scores":
-      discord_content = await todays_scores();
+      embed_content = await todays_scores();
       embed_title = `MLB Games Today - ${today} (PST)`
       embed_url = 'https://www.mlb.com/scores';
       break;
@@ -112,18 +113,17 @@ export async function handler(
       break;
   };
 
-  if ( discord_content.length > 4096 ) {
+  if ((embed_content.length > 4096) || (discord_content.length > 2000)) {
     console.log("ERROR - max character length exceeded.");
-    console.log(`Message length: ${discord_content.length}`);
     return "400";
   }
 
   const response = {
     tts: false,
     // *** Response ***
-    content: '',
+    content: discord_content,
     embeds: [{
-      description: discord_content,
+      description: embed_content,
       title: embed_title,
       url: embed_url,
       color: 65517
