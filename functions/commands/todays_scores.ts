@@ -1,10 +1,7 @@
 import { Game } from './main';
 import { format } from 'date-fns';
 import axios from 'axios';
-
-interface GameMap {
-    [key: string]: Map<string, string>;
-}
+import { GameMap } from '../../lib/types/discord';
 
 async function fetchGames() {
     const todayStr = new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles"});
@@ -32,7 +29,7 @@ export async function todays_scores() {
     for (const game of games) {
         const gameState = game.status.abstractGameState;
         const gameClass = new Game(game.gamePk);
-        const scoreboard = await gameClass.scoreboard();
+        const scoreboard = await gameClass.displayScoreboard();
         const getTime = await gameClass.getStartTime();
 
         gameMaps[gameState]?.set(scoreboard, getTime);

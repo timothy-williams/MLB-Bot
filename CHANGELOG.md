@@ -1,4 +1,6 @@
 # Change Log
+## 2023-8-27
+- Increased general response time for scoreboard retrieval
 ## 2023-8-26
 - `/todays_scores` - Fixed bug where games would not be sorted by time (including doubleheaders)
 ## 2023-8-25

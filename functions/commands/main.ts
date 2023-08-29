@@ -4,19 +4,19 @@ import { getGuildEmojis } from '../utils/EndpointInteractions';
 import { getDiscordSecrets } from '../utils/DiscordSecrets';
 
 export class Game {
-    private gamePk: string;
+    private gameId: string;
     private gameData: any;
 
     // Single game endpoint
-    constructor(gamePk: string) {
-        this.gamePk = gamePk;
+    constructor(gameId: string) {
+        this.gameId = gameId;
     }
 
     // Fetch game data if not already fetched, then return the game data
     private async getGameData() {
         if (!this.gameData) {
             try {
-                const endpoint = `https://statsapi.mlb.com/api/v1.1/game/${this.gamePk}/feed/live`;
+                const endpoint = `https://statsapi.mlb.com/api/v1.1/game/${this.gameId}/feed/live`;
                 const res = await axios.get(endpoint);
                 this.gameData = res.data;
             } catch (error) {
@@ -30,18 +30,21 @@ export class Game {
     async getStartTime() {
         const gm = await this.getGameData();
         
-        if ( 'resumeDateTime' in gm.gameData.datetime ) {
+        if ('resumeDateTime' in gm.gameData.datetime) {
             return gm.gameData.datetime.resumeDateTime;
-        } else if ( ( 'currentInning' in gm.liveData.linescore ) &&
-            ! ( 'resumeDateTime' in gm.gameData.datetime ) ) {
+        } else if (('currentInning' in gm.liveData.linescore) &&
+            ! ('resumeDateTime' in gm.gameData.datetime)) {
             return gm.gameData.gameInfo.firstPitch;
         } else {
             return gm.gameData.datetime.dateTime;
         }
     }
 
-    // 📅 Status • :team_emoji_1: ABC 0 (100-62) @ :team_emoji_2: XYZ 0 (62-100) • 🕒 12:00 PM PST - Length: 2:30
-    async scoreboard() {
+    async displayScoreboard() {
+        /*
+        📅 Status • :team_emoji_1: ABC 0 (100-62) @ :team_emoji_2: XYZ 0 (62-100) • 🕒 12:00 PM PST - Length: 2:30
+        */
+       
         const gm = await this.getGameData();
 
         // Game status
@@ -68,7 +71,7 @@ export class Game {
         let awayRuns: number;
         let homeRuns: number;
 
-        if ( 'runs' in gm.liveData.linescore.teams.away ) {
+        if ('runs' in gm.liveData.linescore.teams.away) {
             awayRuns = gm.liveData.linescore.teams.away.runs;
             homeRuns = gm.liveData.linescore.teams.home.runs;
         } else {
@@ -89,11 +92,11 @@ export class Game {
         // Assign emojis to relative team
         var awayEmoji = '';
         var homeEmoji = '';
-        for ( const tm of teamEmojis ) {
-            if ( `mlb_${awayName}` === tm.name ) {
+        for (const tm of teamEmojis) {
+            if (`mlb_${awayName}` === tm.name) {
                 awayEmoji = `<:${tm.name}:${tm.id}>`
             };
-            if ( `mlb_${homeName}` === tm.name ) {
+            if (`mlb_${homeName}` === tm.name) {
                 homeEmoji = `<:${tm.name}:${tm.id}>`
             };
         };
@@ -106,19 +109,19 @@ export class Game {
         var condenseStatus = '';
         var statusEmoji = '';
 
-        if ( abstract === 'Preview' || status.startsWith('Warmup') ) {
+        if (abstract === 'Preview' || status.startsWith('Warmup')) {
             condenseStatus = 'Scheduled';
             statusEmoji = emoji.emojify(':date:');
-        } else if ( status.startsWith('In Progress')) {
+        } else if (status.startsWith('In Progress')) {
             condenseStatus = 'Live';
             statusEmoji = emoji.emojify(':red_circle:');
-        } else if ( status.startsWith('Delayed') ) {
+        } else if (status.startsWith('Delayed')) {
             condenseStatus = 'Delayed';
             statusEmoji = emoji.emojify(':pause_button:');
-        } else if ( status.startsWith('Suspended') ) {
+        } else if (status.startsWith('Suspended')) {
             condenseStatus = 'Suspended';
             statusEmoji = emoji.emojify(':cloud_rain:');
-        } else if ( abstract === 'Final' ) {
+        } else if (abstract === 'Final') {
             condenseStatus = 'Final';
             statusEmoji = emoji.emojify(':checkered_flag:');
         } else {
@@ -141,14 +144,14 @@ export class Game {
         const timeEmoji: string = emoji.emojify(":clock3:");
 
         // Check if game time is to be determind
-        if ( TBD && abstract === 'Preview' ) { 
+        if (TBD && abstract === 'Preview') { 
             return `${score} ${timeEmoji} TBD`
         }
 
         var inning: number = 0;
         var fpPST: string = '';
 
-        if ( 'resumeDateTime' in gm.gameData.datetime ) { // If resuming/resumed
+        if ('resumeDateTime' in gm.gameData.datetime) { // If resuming/resumed
             // Time conversion for previously suspended games
             const resumeDT = new Date(gm.gameData.datetime.resumeDateTime);
             schedPST = resumeDT.toLocaleString('en-US', {
@@ -158,8 +161,8 @@ export class Game {
                 timeZone: 'America/Los_Angeles'
             });
             fpPST = schedPST; // Change first pitch time to resumed time
-        } else if ( ( 'currentInning' in gm.liveData.linescore ) && // If Live
-            ! ( 'resumeDateTime' in gm.gameData.datetime ) ) {      // but not resumed
+        } else if (('currentInning' in gm.liveData.linescore) && // If Live
+            ! ('resumeDateTime' in gm.gameData.datetime)) {      // but not resumed
             inning = gm.liveData.linescore.currentInning;
             
             // Time conversion for live and completed games
@@ -175,21 +178,21 @@ export class Game {
         }
 
         // More formatting; current inning, extra innings, etc.
-        if ( abstract === 'Live' ) {
+        if (abstract === 'Live') {
             var half: string = gm.liveData.linescore.inningHalf;
-            if ( half === 'Bottom' ) {
+            if (half === 'Bottom') {
                 half = 'Bot';
             };
             score = `${statusEmoji} ${condenseStatus} • ${half} ${inning} ${awayLine} @ ${homeLine}`;
-        } else if ( inning > 9 && abstract === 'Final' ) {
+        } else if (inning > 9 && abstract === 'Final') {
             score = `${statusEmoji} ${condenseStatus} (${inning}) ${awayLine} @ ${homeLine}`;
         }
 
         let intLength: number;
 
-        if ( status.startsWith('Suspended') ) {
+        if (status.startsWith('Suspended')) {
             return `${score} ${timeEmoji} ${fpPST}`;
-        } else if ( status.startsWith('Final') || status.startsWith('Game Over') ) {
+        } else if (status.startsWith('Final') || status.startsWith('Game Over')) {
             intLength = gm.gameData.gameInfo.gameDurationMinutes;
         } else {
             return `${score} ${timeEmoji} ${fpPST}`;
@@ -204,5 +207,164 @@ export class Game {
         const gameTimeComplete: string = `${timeEmoji} ${fpPST} • Length: ${length}`;
         const finalDetailed: string = `${score} ${gameTimeComplete}`
         return finalDetailed;
+    }
+
+    async displayLinescore() {
+        /*
+        MM/DD/YY |  1   2   3   4   5   6   7   8   9  |  R   H   E
+        ---------|-------------------------------------|-------------
+        Team 1   |  0   0   0   0   0   0   0   0   0  |  0   0   0 
+        Team 2   |  0   0   0   0   0   0   0   0   X  |  0   0   0
+        */
+
+        const gm = await this.getGameData();
+
+        const gameDate = new Date(gm.gameData.datetime.dateTime);
+        var strDate: string = gameDate.toLocaleDateString('en-US', {
+            timeZone: 'America/Los_Angeles'
+        });
+        const awayName: string = gm.gameData.teams.away.clubName
+        const homeName: string = gm.gameData.teams.home.clubName
+        const linescoreData = gm.liveData.linescore
+
+        /* Split linescore into 9 sections like a 3x3 grid */
+
+        // Define left third
+        var topLeft: string; // Date
+        var leftPad: string; // Dash padding below date
+        var midLeft: string; // Away team name
+        var botLeft: string; // Home team name
+
+        if ((strDate.length >= awayName.length) || // If date is longer
+            (strDate.length >= homeName.length)) {
+            topLeft = strDate + ' ';
+            leftPad = ''.padStart(topLeft.length, '-');
+            midLeft = awayName.padEnd(topLeft.length);
+            botLeft = homeName.padEnd(topLeft.length);
+        } else { // If one of the team names are longer
+            if (awayName.length >= homeName.length) {
+                midLeft = awayName + ' ';
+                topLeft = strDate.padEnd(midLeft.length);
+                leftPad = ''.padStart(midLeft.length, '-');
+                botLeft = homeName.padEnd(midLeft.length);
+            } else {
+                botLeft = homeName + ' ';
+                topLeft = strDate.padEnd(botLeft.length);
+                leftPad = ''.padStart(botLeft.length, '-');
+                midLeft = awayName.padEnd(botLeft.length);
+            }
+        }
+
+        const totalInnings: number = linescoreData.currentInning
+
+        // Define middle third
+        let topMid = ''; // Innings
+        var midPad: string; // Dash padding below innings
+        let midMid = ''; // Away team runs scored by inning
+        let botMid = ''; // Home team runs scored by inning
+
+        for (let i = 1; i <= totalInnings; i++) {
+            topMid += i + '   '; // 3 spaces between each number
+        }
+
+        topMid = `  ${topMid.trimEnd()}  `; // 2 spaces on each side
+        midPad = ''.padStart(topMid.length, '-');
+
+        const individualInnings = linescoreData.innings
+
+        for (const inn of individualInnings) {
+            midMid += (inn.away.runs).toString() + '   ';
+
+            // Check if home team needed to play the final bottom half
+            if (('runs' in inn.home)) {
+                botMid += (inn.home.runs).toString() + '   ';
+            }
+            else {
+                botMid += 'X' 
+            }         
+        }
+
+        midMid = `  ${midMid.trimEnd()}  `;
+        botMid = `  ${botMid.trimEnd()}  `;
+
+        // Define right third
+        const topRight = '  R   H   E  ';
+        const rightPad = ''.padStart(topRight.length, '-');
+        
+        const awayLinescore = linescoreData.teams.away
+        const homeLinescore = linescoreData.teams.home
+
+        const awayRuns: number = awayLinescore.runs
+        const awayHits: number = awayLinescore.hits
+        const awayErrors : number = awayLinescore.errors
+
+        const homeRuns: number = homeLinescore.runs
+        const homeHits: number = homeLinescore.hits
+        const homeErrors : number = homeLinescore.errors
+
+        const midRight = `  ${awayRuns}   ${awayHits}   ${awayErrors}`
+        const botRight = `  ${homeRuns}   ${homeHits}   ${homeErrors}`
+
+        // Build the linescore
+        const topLine = `${topLeft}|${topMid}|${topRight}`;
+        const padLine = `${leftPad}|${midPad}|${rightPad}`;
+        const midLine = `${midLeft}|${midMid}|${midRight}`;
+        const botLine = `${botLeft}|${botMid}|${botRight}`;
+
+        return `${topLine}\n${padLine}\n${midLine}\n${botLine}`;
+    }
+}
+
+export class Team {
+    private teamId: string;
+    private teamData: any;
+    private endpoint: string;
+    private lastGameID: string;
+
+    constructor(teamId: string) {
+        this.teamId = teamId;
+        this.endpoint = `https://statsapi.mlb.com/api/v1/teams/${this.teamId}`
+    }
+
+    // Single team endpoint
+    private async getTeamData() {
+        if (!this.teamData) {
+            try {
+                const res = await axios.get(this.endpoint);
+                this.teamData = res.data;
+            } catch (error) {
+                console.error('Error fetching team data:', error);
+                throw error; // Handle the error further up the call stack
+            }
+        }
+        return this.teamData;
+    }
+
+    // Returns gamePk of team's most recent completed game
+    async getRecentCompletedGameID() {
+        if (!this.lastGameID) {
+            try {
+                const recentGamesEndpoint = `${this.endpoint}?hydrate=previousSchedule`
+                const res = await axios.get(recentGamesEndpoint);
+                const previousSchedule = res.data.teams[0].previousGameSchedule.dates
+                const previousGames: Record<any, any>[] = [];
+
+                for (const d of previousSchedule.teams[0].previousGameSchedule.dates) {
+                    previousGames.push(...d.games.filter((x: { 
+                        status: { abstractGameCode: string; }; }) => 
+                        x.status.abstractGameCode === "F"));
+                }
+                
+                if (previousGames.length === 0) {
+                    return null;
+                }
+                
+                this.lastGameID = (previousGames[previousGames.length - 1].gamePk).toString();
+            } catch (error) {
+                console.error("Error fetching team's last completed game ID:", error);
+                throw error; // Handle the error further up the call stack
+            }
+        }
+        return this.lastGameID;
     }
 }

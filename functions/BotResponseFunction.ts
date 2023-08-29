@@ -8,6 +8,7 @@ import {
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { todays_scores } from './commands/todays_scores';
+import { last_game } from './commands/last_game';
 import { format } from "date-fns";
 
 //const AWS = require("aws-sdk");
@@ -86,16 +87,25 @@ export async function handler(
   /*
   const no_permissions_error_message = "You do not have permission to use this command.";
   const stepFunctions = new AWS.StepFunctions();
+  */
+
   const input = {
     commandName: commandStructure.commandName,
     commandValue: commandStructure.commandValue
   };
-  */
+
   switch ( commandStructure.commandName ) {
     case "todays_scores":
       discord_content = await todays_scores();
       embed_title = `MLB Games Today - ${today} (PST)`
       embed_url = 'https://www.mlb.com/scores';
+      break;
+    case "last_game":
+      if (input.commandValue !== undefined) {
+          discord_content = await last_game(input.commandValue);
+      } else {
+          discord_content = "Missing command value. Please provide a value for the 'last_game' command.";
+      }
       break;
     default:
       discord_content = "Invalid command. Please try again.";
