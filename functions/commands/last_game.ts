@@ -14,5 +14,6 @@ export async function last_game(teamAbbr: string) {
     const lastGame = new Game(lastGameID);
     const linescore = await lastGame.displayLinescore();
 
+    console.log(`${teamAbbr}'s last game linescore:\n${linescore}`)
     return linescore;
 }

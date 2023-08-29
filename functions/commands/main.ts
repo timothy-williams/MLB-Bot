@@ -264,7 +264,7 @@ export class Game {
         let botMid = ''; // Home team runs scored by inning
 
         for (let i = 1; i <= totalInnings; i++) {
-            topMid += i + '   '; // 3 spaces between each number
+            topMid += i.toString().padEnd(4); // 3 spaces between each number
         }
 
         topMid = `  ${topMid.trimEnd()}  `; // 2 spaces on each side
@@ -273,11 +273,11 @@ export class Game {
         const individualInnings = linescoreData.innings
 
         for (const inn of individualInnings) {
-            midMid += (inn.away.runs).toString() + '   ';
+            midMid += (inn.away.runs).toString().padEnd(4);
 
             // Check if home team needed to play the final bottom half
             if (('runs' in inn.home)) {
-                botMid += (inn.home.runs).toString() + '   ';
+                botMid += (inn.home.runs).toString().padEnd(4);
             }
             else {
                 botMid += 'X' 
@@ -294,16 +294,16 @@ export class Game {
         const awayLinescore = linescoreData.teams.away
         const homeLinescore = linescoreData.teams.home
 
-        const awayRuns: number = awayLinescore.runs
-        const awayHits: number = awayLinescore.hits
-        const awayErrors : number = awayLinescore.errors
+        const awayRuns = (awayLinescore.runs).toString()
+        const awayHits = awayLinescore.hits.toString()
+        const awayErrors = awayLinescore.errors.toString()
 
-        const homeRuns: number = homeLinescore.runs
-        const homeHits: number = homeLinescore.hits
-        const homeErrors : number = homeLinescore.errors
+        const homeRuns = homeLinescore.runs.toString()
+        const homeHits = homeLinescore.hits.toString()
+        const homeErrors = homeLinescore.errors.toString()
 
-        const midRight = `  ${awayRuns}   ${awayHits}   ${awayErrors}`
-        const botRight = `  ${homeRuns}   ${homeHits}   ${homeErrors}`
+        const midRight = `  ${awayRuns.padEnd(4)}${awayHits.padEnd(4)}${awayErrors}`
+        const botRight = `  ${homeRuns.padEnd(4)}${homeHits.padEnd(4)}${homeErrors}`
 
         // Build the linescore
         const topLine = `${topLeft}|${topMid}|${topRight}`;
@@ -349,7 +349,7 @@ export class Team {
                 const previousSchedule = res.data.teams[0].previousGameSchedule.dates
                 const previousGames: Record<any, any>[] = [];
 
-                for (const d of previousSchedule.teams[0].previousGameSchedule.dates) {
+                for (const d of previousSchedule) {
                     previousGames.push(...d.games.filter((x: { 
                         status: { abstractGameCode: string; }; }) => 
                         x.status.abstractGameCode === "F"));
