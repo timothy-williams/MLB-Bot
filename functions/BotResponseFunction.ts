@@ -82,7 +82,7 @@ export async function handler(
   const today = format(new Date(), 'MMMM d, yyyy');
   var discord_content = "Default message";
   var embed_title = "Default title";
-  var embed_url = "Default URL";
+  var embed_url = "https://www.mlb.com/scores";
 
   /*
   const no_permissions_error_message = "You do not have permission to use this command.";
