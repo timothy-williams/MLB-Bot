@@ -95,9 +95,9 @@ export interface IDiscordEndpointInfo {
  */
 export interface IDiscordResponseData {
   tts: boolean;
-  content: string;
-  embeds: any[];
-  allowedMentions: string[];
+  content?: string;
+  embeds?: any[];
+  allowedMentions?: string[];
 }
 
 export interface IDiscordCommandStructure {
@@ -110,4 +110,12 @@ export interface IDiscordCommandStructure {
 
 export interface GameMap {
   [key: string]: Map<string, string>;
+}
+
+export interface EmbedStructure {
+  content(param: any): string | Promise<string>;
+  title(param: any): string;
+  url(param: any): string;
+  color(): number;
+  buildObject(param: any): Record<any, any>;
 }
