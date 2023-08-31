@@ -94,11 +94,11 @@ export async function handler(
 
   switch ( input.commandName ) {
     case "todays_scores":
-      embed_object = new ScoresToday().buildObject();
+      embed_object = await new ScoresToday().buildObject();
       break;
     case "last_game":
       if (input.commandValue !== undefined) {
-          embed_object = new LastGame().buildObject(input.commandValue);
+          embed_object = await new LastGame().buildObject(input.commandValue);
       } else {
           discord_content = "Please provide a league and team name.";
       }

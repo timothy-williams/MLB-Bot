@@ -5,7 +5,7 @@ import { EmbedStructure } from '../../lib/types/discord';
 export class LastGame implements EmbedStructure {
     lastGameID: string | null;
 
-    // Linescore
+    // Linescore message
     async content(teamAbbr: string) {
         const teamID = mlbIDs[teamAbbr];
         this.lastGameID = await new Team(teamID).getRecentCompletedGameID();
@@ -38,9 +38,10 @@ export class LastGame implements EmbedStructure {
         return 65517;
     }
 
-    buildObject(teamAbbr: string) {
+    // Build embed object
+    async buildObject(teamAbbr: string) {
         return {
-            description: this.content(teamAbbr),
+            description: await this.content(teamAbbr),
             title: this.title(teamAbbr),
             url: this.url(),
             color: this.color()

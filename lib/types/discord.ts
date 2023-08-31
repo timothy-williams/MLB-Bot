@@ -117,5 +117,5 @@ export interface EmbedStructure {
   title(param: any): string;
   url(param: any): string;
   color(): number;
-  buildObject(param: any): Record<any, any>;
+  buildObject(param: any): Promise<Record<any, any>>;
 }

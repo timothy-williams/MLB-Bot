@@ -70,9 +70,9 @@ export class ScoresToday implements EmbedStructure {
     }
 
     // Build embed object
-    buildObject(){
+    async buildObject(){
         return {
-            description: this.content(),
+            description: await this.content(),
             title: this.title(),
             url: this.url(),
             color: this.color()
