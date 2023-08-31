@@ -223,8 +223,8 @@ export class Game {
         var strDate: string = gameDate.toLocaleDateString('en-US', {
             timeZone: 'America/Los_Angeles'
         });
-        const awayName: string = gm.gameData.teams.away.clubName
-        const homeName: string = gm.gameData.teams.home.clubName
+        const awayName: string = gm.gameData.teams.away.teamName
+        const homeName: string = gm.gameData.teams.home.teamName
         const linescoreData = gm.liveData.linescore
 
         /* Split linescore into 9 sections like a 3x3 grid */
@@ -264,7 +264,7 @@ export class Game {
         let botMid = ''; // Home team runs scored by inning
 
         for (let i = 1; i <= totalInnings; i++) {
-            topMid += i.toString().padEnd(4); // 3 spaces between each number
+            topMid += i.toString().padEnd(3); // 3 spaces between each number
         }
 
         topMid = `  ${topMid.trimEnd()}  `; // 2 spaces on each side
@@ -273,11 +273,11 @@ export class Game {
         const individualInnings = linescoreData.innings
 
         for (const inn of individualInnings) {
-            midMid += (inn.away.runs).toString().padEnd(4);
+            midMid += (inn.away.runs).toString().padEnd(3);
 
             // Check if home team needed to play the final bottom half
             if (('runs' in inn.home)) {
-                botMid += (inn.home.runs).toString().padEnd(4);
+                botMid += (inn.home.runs).toString().padEnd(3);
             }
             else {
                 botMid += 'X' 
@@ -288,7 +288,7 @@ export class Game {
         botMid = `  ${botMid.trimEnd()}  `;
 
         // Define right third
-        const topRight = '  R   H   E  ';
+        const topRight = '  R  H  E  ';
         const rightPad = ''.padStart(topRight.length, '-');
         
         const awayLinescore = linescoreData.teams.away
@@ -302,8 +302,8 @@ export class Game {
         const homeHits = homeLinescore.hits.toString()
         const homeErrors = homeLinescore.errors.toString()
 
-        const midRight = `  ${awayRuns.padEnd(4)}${awayHits.padEnd(4)}${awayErrors}`
-        const botRight = `  ${homeRuns.padEnd(4)}${homeHits.padEnd(4)}${homeErrors}`
+        const midRight = `  ${awayRuns.padEnd(3)}${awayHits.padEnd(3)}${awayErrors}`
+        const botRight = `  ${homeRuns.padEnd(3)}${homeHits.padEnd(3)}${homeErrors}`
 
         // Build the linescore
         const topLine = `${topLeft}|${topMid}|${topRight}`;
