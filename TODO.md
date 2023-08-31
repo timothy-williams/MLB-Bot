@@ -1,9 +1,11 @@
 # MLB-Bot To-Do list
 ### In Progress/Next
-- `/last_game` - Refactor to display as an embed
+- Fix bug where scoreboard displays "Unknown Status" during a replay/challenge
 ### To-do
 - Refactor `Game` class to abstract some functionality within itself
-- Fix bug where scoreboard posts displays "Unknown Status" during a replay/challenge
+- `/todays_scores` - Adjust spacing for column alignment
+- `/last_game` - Fix bug where command options for AL/NL show as optional instead of mandatory
+- `/last_game` - Fix bug where command options allow selection of both leagues instead of one
 ### Planned Features
 - N/A
 ### Known Bugs

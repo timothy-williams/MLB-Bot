@@ -1,4 +1,6 @@
 # Change Log
+## 2023-8-31
+- `/last_game` - Now displays as an embed instead of a regular message
 ## 2023-8-28
 - `/last_game` V1.0: Display box score of selected team's most recent completed game
 ## 2023-8-27
