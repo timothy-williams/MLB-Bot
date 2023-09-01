@@ -6,19 +6,18 @@ import { getDiscordSecrets } from '../utils/DiscordSecrets';
 export class Game {
     private gameId: string;
     private gameData: any;
-    private endpoint: string;
 
-    // Single game base endpoint
+    // Single game endpoint
     constructor(gameId: string) {
         this.gameId = gameId;
-        this.endpoint = `https://statsapi.mlb.com/api/v1.1/game/${this.gameId}/feed/live`;
     }
 
     // Fetch game data if not already fetched, then return the game data
     private async getGameData() {
         if (!this.gameData) {
             try {
-                const res = await axios.get(this.endpoint);
+                const endpoint = `https://statsapi.mlb.com/api/v1.1/game/${this.gameId}/feed/live`;
+                const res = await axios.get(endpoint);
                 this.gameData = res.data;
             } catch (error) {
                 console.error('Error fetching game data:', error);
@@ -28,19 +27,9 @@ export class Game {
         return this.gameData;
     }
 
-    private convertToPST(dateTimeStr: string) {
-        const datetime = new Date(dateTimeStr);
-        const PST: string = datetime.toLocaleString('en-US', {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true,
-            timeZone: 'America/Los_Angeles'
-        });
-        return PST;
-    }
-
     async getStartTime() {
         const gm = await this.getGameData();
+        
         if ('resumeDateTime' in gm.gameData.datetime) {
             return gm.gameData.datetime.resumeDateTime;
         } else if (('currentInning' in gm.liveData.linescore) &&
@@ -112,61 +101,80 @@ export class Game {
             };
         };
         
-        const awayNoEmoji = `${awayAbbr} ${awayRuns} (${awayWin}-${awayLoss})`.padEnd(16);
-        const homeNoEmoji = `${homeAbbr} ${homeRuns} (${homeWin}-${homeLoss})`.padEnd(16);
-        const awayLine = `${awayEmoji} ${awayNoEmoji}`;
-        const homeLine = `${homeEmoji} ${homeNoEmoji}`;
+        const awayLine = `${awayEmoji} ${awayAbbr} ${awayRuns} (${awayWin}-${awayLoss})`;
+        const homeLine = `${homeEmoji} ${homeAbbr} ${homeRuns} (${homeWin}-${homeLoss})`;
 
         // Assign emojis to game state
         // Condense game state verbiage
         var condenseStatus = '';
         var statusEmoji = '';
 
-        if (status.startsWith('Delayed')) {
+        if (abstract === 'Preview' || status.startsWith('Warmup')) {
+            condenseStatus = 'Scheduled';
+            statusEmoji = emoji.emojify(':date:');
+        } else if (status.startsWith('In Progress')) {
+            condenseStatus = 'Live';
+            statusEmoji = emoji.emojify(':red_circle:');
+        } else if (status.startsWith('Delayed')) {
             condenseStatus = 'Delayed';
             statusEmoji = emoji.emojify(':pause_button:');
         } else if (status.startsWith('Suspended')) {
             condenseStatus = 'Suspended';
             statusEmoji = emoji.emojify(':cloud_rain:');
-        } else if (abstract === 'Preview' || status.startsWith('Warmup')) {
-            condenseStatus = 'Scheduled';
-            statusEmoji = emoji.emojify(':date:');
-        } else if (abstract === 'Live') {
-            condenseStatus = 'Live';
-            statusEmoji = emoji.emojify(':red_circle:');
         } else if (abstract === 'Final') {
             condenseStatus = 'Final';
             statusEmoji = emoji.emojify(':checkered_flag:');
         } else {
-            condenseStatus = '???';
+            condenseStatus = 'Unknown Status';
             statusEmoji = emoji.emojify(':x:');
         }
 
         // Formatting
-        var score = `${statusEmoji} ${condenseStatus.padEnd(13)}${awayLine} @ ${homeLine}`;
+        var score = `${statusEmoji} ${condenseStatus} ${awayLine} @ ${homeLine}`;
 
         // Time conversion for scheduled games
-        const schedPST = this.convertToPST(gm.gameData.datetime.dateTime);
+        const schedDT = new Date(gm.gameData.datetime.dateTime);
+        var schedPST: string = schedDT.toLocaleString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true,
+            timeZone: 'America/Los_Angeles'
+        });
 
         const timeEmoji: string = emoji.emojify(":clock3:");
 
         // Check if game time is to be determind
         if (TBD && abstract === 'Preview') { 
-            return `${score}${timeEmoji} TBD`
+            return `${score} ${timeEmoji} TBD`
         }
 
         var inning: number = 0;
         var fpPST: string = '';
-        
+
         if ('resumeDateTime' in gm.gameData.datetime) { // If resuming/resumed
-            const schedPST = this.convertToPST(gm.gameData.datetime.resumeDateTime);
-            fpPST = schedPST; // Time conversion for previously suspended games
-        } else if (('currentInning' in gm.liveData.linescore) && // If live but not resumed
-            ! ('resumeDateTime' in gm.gameData.datetime)) {      
+            // Time conversion for previously suspended games
+            const resumeDT = new Date(gm.gameData.datetime.resumeDateTime);
+            schedPST = resumeDT.toLocaleString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+                timeZone: 'America/Los_Angeles'
+            });
+            fpPST = schedPST; // Change first pitch time to resumed time
+        } else if (('currentInning' in gm.liveData.linescore) && // If Live
+            ! ('resumeDateTime' in gm.gameData.datetime)) {      // but not resumed
             inning = gm.liveData.linescore.currentInning;
-            fpPST = this.convertToPST(gm.gameData.gameInfo.firstPitch); // Time conversion for live and completed games
-        } else { 
-            return `${score}${timeEmoji} ${schedPST.padEnd(9)}`; // If regular scheduled game
+            
+            // Time conversion for live and completed games
+            const fpDT = new Date(gm.gameData.gameInfo.firstPitch);
+            fpPST = fpDT.toLocaleString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+                timeZone: 'America/Los_Angeles'
+            });
+        } else { // If regular scheduled game
+            return `${score} ${timeEmoji} ${schedPST}`;
         }
 
         // More formatting; current inning, extra innings, etc.
@@ -175,19 +183,19 @@ export class Game {
             if (half === 'Bottom') {
                 half = 'Bot';
             };
-            score = `${statusEmoji} ${condenseStatus} • ${half} ${inning.toString().padEnd(3)}${awayLine}@  ${homeLine}`;
+            score = `${statusEmoji} ${condenseStatus} • ${half} ${inning} ${awayLine} @ ${homeLine}`;
         } else if (inning > 9 && abstract === 'Final') {
-            score = `${statusEmoji} ${condenseStatus} ` + `(${inning})`.toString().padEnd(3) + `${awayLine}@  ${homeLine}`;
+            score = `${statusEmoji} ${condenseStatus} (${inning}) ${awayLine} @ ${homeLine}`;
         }
 
         let intLength: number;
 
         if (status.startsWith('Suspended')) {
-            return `${score}${timeEmoji} ${fpPST}`;
+            return `${score} ${timeEmoji} ${fpPST}`;
         } else if (status.startsWith('Final') || status.startsWith('Game Over')) {
             intLength = gm.gameData.gameInfo.gameDurationMinutes;
         } else {
-            return `${score}${timeEmoji} ${fpPST}`;
+            return `${score} ${timeEmoji} ${fpPST}`;
         }
 
         // Length of game in hours and minutes
@@ -196,8 +204,8 @@ export class Game {
         const length = `${hours}:${minutes}`;
 
         // Last formatting
-        const gameTimeComplete: string = `${timeEmoji} ${fpPST} • T: ${length}`;
-        const finalDetailed: string = `${score}${gameTimeComplete}`
+        const gameTimeComplete: string = `${timeEmoji} ${fpPST} • Length: ${length}`;
+        const finalDetailed: string = `${score} ${gameTimeComplete}`
         return finalDetailed;
     }
 
@@ -286,7 +294,7 @@ export class Game {
         const awayLinescore = linescoreData.teams.away
         const homeLinescore = linescoreData.teams.home
 
-        const awayRuns = awayLinescore.runs.toString()
+        const awayRuns = (awayLinescore.runs).toString()
         const awayHits = awayLinescore.hits.toString()
         const awayErrors = awayLinescore.errors.toString()
 
@@ -315,7 +323,7 @@ export class Team {
 
     constructor(teamId: string) {
         this.teamId = teamId;
-        this.endpoint = `https://statsapi.mlb.com/api/v1/teams/${this.teamId}`;
+        this.endpoint = `https://statsapi.mlb.com/api/v1/teams/${this.teamId}`
     }
 
     // Single team endpoint
