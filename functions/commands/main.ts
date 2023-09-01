@@ -14,6 +14,7 @@ export class Game {
 
     // Fetch game data if not already fetched, then return the game data
     private async getGameData() {
+        //console.log(`Game ID: ${this.gameId}`)
         if (!this.gameData) {
             try {
                 const endpoint = `https://statsapi.mlb.com/api/v1.1/game/${this.gameId}/feed/live`;
@@ -267,7 +268,7 @@ export class Game {
             topMid += i.toString().padEnd(3); // 3 spaces between each number
         }
 
-        topMid = `  ${topMid.trimEnd()}  `; // 2 spaces on each side
+        topMid = `  ${topMid}`;
         midPad = ''.padStart(topMid.length, '-');
 
         const individualInnings = linescoreData.innings
@@ -342,6 +343,7 @@ export class Team {
 
     // Returns gamePk of team's most recent completed game
     async getRecentCompletedGameID() {
+        //console.log(`Team ID: ${this.teamId}`)
         if (!this.lastGameID) {
             try {
                 const recentGamesEndpoint = `${this.endpoint}?hydrate=previousSchedule`

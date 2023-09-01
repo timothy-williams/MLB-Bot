@@ -1,6 +1,7 @@
 export const mlbIDs: { [key: string]: string } = {
     'LAA': '108',
     'ARI': '109',
+    'ATL': '144',
     'BAL': '110',
     'BOS': '111',
     'CHC': '112',
