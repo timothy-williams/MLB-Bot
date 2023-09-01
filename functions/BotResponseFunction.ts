@@ -74,7 +74,14 @@ export async function handler(
     case "todays_scores":
       embed_object = await new ScoresToday().buildObject();
       break;
-    case "last_game":
+    case "last_game_al":
+      if (input.commandValue !== undefined) {
+          embed_object = await new LastGame().buildObject(input.commandValue);
+      } else {
+          discord_content = "Please provide a league and team name.";
+      }
+      break;
+    case "last_game_nl":
       if (input.commandValue !== undefined) {
           embed_object = await new LastGame().buildObject(input.commandValue);
       } else {
