@@ -9,7 +9,6 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { ScoresToday  } from './commands/todays_scores';
 import { LastGame } from './commands/last_game';
-import { format } from "date-fns";
 
 //const AWS = require("aws-sdk");
 const commandHistoryTableName = process.env.CommandHistoryTableName;
@@ -58,31 +57,10 @@ export async function handler(
     guildId: event.jsonBody.guild_id
   };
 
-  /*
-  const commandValue = event.jsonBody.data?.options?.[0]?.value;
-  const userIdOfCommandUsed = event.jsonBody.member?.user.id;
-
-  
-  const smeez_user_id = "176503559121141760";
-  console.log(`Command Structure:\n${JSON.stringify(commandStructure)}`);
-  var admin_status = false;
-  if (commandStructure.userId === smeez_user_id) {
-    admin_status = true;
-  }
-
-  const userNameOfCommandUsed = event.jsonBody.member?.user.username;
-  const guildIdOfCommandUsed = event.jsonBody.guild_id;
-  */
-
   // Snippets for the response below:
   // Command: ${event.jsonBody.data?.options?.[0]?.value}
   // Username: ${event.jsonBody.member?.user.username}
   // GuildId: ${event.jsonBody.guild_id}`,
-
-  /*
-  const no_permissions_error_message = "You do not have permission to use this command.";
-  const stepFunctions = new AWS.StepFunctions();
-  */
 
   let discord_content: string | undefined;
   let embed_object: Record<any, any> | undefined;
@@ -92,7 +70,7 @@ export async function handler(
     commandValue: commandStructure.commandValue
   };
 
-  switch ( input.commandName ) {
+  switch (input.commandName) {
     case "todays_scores":
       embed_object = await new ScoresToday().buildObject();
       break;
