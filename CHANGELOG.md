@@ -1,4 +1,6 @@
 # Change Log
+## 2023-9-1
+- Split `last_game` up into `last_game_al` and `last_game_nl` to fit within Discord's 25 choice limit
 ## 2023-8-31
 - `/last_game` - Now displays as an embed instead of a regular message
 ## 2023-8-28
