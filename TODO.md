@@ -1,10 +1,10 @@
 # MLB-Bot To-Do list
 ### In Progress/Next
-- N/A
+- Create command `/standings`
 ### To-do
 - N/A
 ### Planned Features
-- N/A
+- `/standings` - Display standings from selected division or wild card
 ### Known Bugs
 - N/A
 ### Requests

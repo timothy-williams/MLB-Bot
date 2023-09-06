@@ -1,9 +1,10 @@
-import { Game, Team } from './main';
+import { Team } from '../../lib/classes/TeamClass';
+import { formatLinescore } from '../format/linescore';
 import { mlbIDs } from '../constants/TeamIDs';
 import { EmbedStructure } from '../../lib/types/discord';
 
 export class LastGame implements EmbedStructure {
-    lastGameID: string | null;
+    private lastGameID: string | null;
 
     // Linescore message
     async content(teamAbbr: string) {
@@ -16,8 +17,7 @@ export class LastGame implements EmbedStructure {
             return "No recent game found for the team.";
         }
 
-        const lastGame = new Game(this.lastGameID);
-        const linescore = await lastGame.displayLinescore();
+        const linescore = await formatLinescore(this.lastGameID);
 
         console.log(`${teamAbbr}'s last game linescore:\n${linescore}`)
         return "```" + linescore + "```";

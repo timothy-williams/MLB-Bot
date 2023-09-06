@@ -1,4 +1,5 @@
-import { Game } from './main';
+import { formatScoreboard } from '../format/scoreboard';
+import { Game } from '../../lib/classes/GameClass';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { EmbedStructure, GameMap } from '../../lib/types/discord';
@@ -36,11 +37,11 @@ export class ScoresToday implements EmbedStructure {
 
         for (const game of games) {
             const gameState = game.status.abstractGameState;
+            const scoreboard = await formatScoreboard(game.gamePk);
             const gameClass = new Game(game.gamePk);
-            const scoreboard = await gameClass.displayScoreboard();
-            const getTime = await gameClass.getStartTime();
+            const gmDT = await gameClass.getDateTime();
 
-            gameMaps[gameState]?.set(scoreboard, getTime);
+            gameMaps[gameState]?.set(scoreboard, gmDT.get('startTime'));
         }
 
         const sortedGames = {

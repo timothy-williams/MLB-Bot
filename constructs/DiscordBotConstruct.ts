@@ -2,12 +2,10 @@ import {Duration} from 'aws-cdk-lib';
 import {Function, Runtime} from 'aws-cdk-lib/aws-lambda';
 import {Cors, LambdaIntegration, RequestValidator, RestApi} from 'aws-cdk-lib/aws-apigateway';
 import {NodejsFunction} from 'aws-cdk-lib/aws-lambda-nodejs';
-// import {SecretAttributes} from 'aws-cdk-lib/aws-secretsmanager';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import {Construct} from 'constructs';
 import * as path from 'path';
 import { discordClientSecretArn } from '../functions/constants/EnvironmentProps';
-import { ServiceIntegrationPattern } from 'aws-cdk-lib/aws-stepfunctions';
 import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 
 /**
