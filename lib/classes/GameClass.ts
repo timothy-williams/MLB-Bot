@@ -118,7 +118,7 @@ export class Game {
 
         if ('resumeDateTime' in map.get('dateTimeDict')) {
             map.set('startTime', gm.gameData.datetime.resumeDateTime);
-        } else if (('currentInning' in gm.liveData.linescore) &&
+        } else if (('firstPitch' in map.get('dateTimeDict')) &&
             !('resumeDateTime' in map.get('dateTimeDict'))) {
             map.set('startTime', gm.gameData.datetime.firstPitch);
         } else {

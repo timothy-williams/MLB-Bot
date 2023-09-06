@@ -97,6 +97,8 @@ export async function formatScoreboard(gameId: string) {
         return `${score} ${timeEmoji} ${toPST}`;
     } else if (inning > 9 && abstract === 'Final') {
         score = `${statusEmoji} ${condenseStatus} (${inning}) ${awayLine} @ ${homeLine}`;
+    } else {
+        return `${score} ${timeEmoji} ${toPST}`;
     }
 
     if (intLength) {
