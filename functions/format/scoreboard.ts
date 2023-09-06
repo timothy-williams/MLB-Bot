@@ -79,8 +79,8 @@ export async function formatScoreboard(gameId: string) {
         hour12: true,
         timeZone: 'America/Los_Angeles'
     });
-    const timeEmoji: string = emoji.emojify(":clock3:");
 
+    const timeEmoji: string = emoji.emojify(":clock3:");
     const abstract = gmState.get('abstractState');
     const inning = gmState.get('inning');
     const half = gmState.get('half');
@@ -88,28 +88,30 @@ export async function formatScoreboard(gameId: string) {
 
     if (gmState.get('TBD') && (abstract === 'Preview')) { 
         return `${score} ${timeEmoji} TBD`;
-    } else if (!inning || (condenseStatus === 'Suspended')) {
-        return `${score} ${timeEmoji} ${toPST}`;
-    }
-
-    if (abstract === 'Live') {
-        score = `${statusEmoji} ${condenseStatus} • ${half} ${inning} ${awayLine} @ ${homeLine}`;
-        return `${score} ${timeEmoji} ${toPST}`;
-    } else if (inning > 9 && abstract === 'Final') {
+    } 
+    
+    if (inning > 9 && condenseStatus === 'Final') {
         score = `${statusEmoji} ${condenseStatus} (${inning}) ${awayLine} @ ${homeLine}`;
-    } else {
-        return `${score} ${timeEmoji} ${toPST}`;
     }
 
-    if (intLength) {
-        const hours: number = Math.floor(intLength / 60);
-        const minutes: string = (intLength % 60).toString().padStart(2, '0');
-        const length = `${hours}:${minutes}`;
+    switch (condenseStatus) {
+        case 'Live':
+            score = `${statusEmoji} ${condenseStatus} • ${half} ${inning} ${awayLine} @ ${homeLine}`;
+            return `${score} ${timeEmoji} ${toPST}`;
+        case 'Scheduled':
+        case 'Delayed':
+        case 'Suspended':
+        case '???':
+            return `${score} ${timeEmoji} ${toPST}`;
+        case 'Final':
+            const hours: number = Math.floor(intLength / 60);
+            const minutes: string = (intLength % 60).toString().padStart(2, '0');
+            const length = `${hours}:${minutes}`;
 
-        const gameTimeComplete: string = `${timeEmoji} ${toPST} • Length: ${length}`;
-        const finalDetailed: string = `${score} ${gameTimeComplete}`
-        return finalDetailed;
-    }
+            const gameTimeComplete: string = `${timeEmoji} ${toPST} • Length: ${length}`;
+            const finalDetailed: string = `${score} ${gameTimeComplete}`
+            return finalDetailed;
+    };
 
     return 'Something went wrong.';
 }
