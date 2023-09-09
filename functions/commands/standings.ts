@@ -8,7 +8,8 @@ import { divisionIDs, leagueIDs } from '../constants/MLBProps';
 export class DivisionStandings implements EmbedStructure {
     async content(divisionId: string) {
         const leagueId: string = divisionIDs[divisionId].league;
-        return (await formatDivisionStandings(leagueId, divisionId));
+        const standings = await formatDivisionStandings(leagueId, divisionId);
+        return "```" + standings + "```";
     }
 
     title(divisionId: string) {
