@@ -1,6 +1,6 @@
 import { Team } from '../../lib/classes/TeamClass';
 import { formatLinescore } from '../format/linescore';
-import { mlbIDs } from '../constants/TeamIDs';
+import { mlbIDs } from '../constants/MLBProps';
 import { EmbedStructure } from '../../lib/types/discord';
 
 export class LastGame implements EmbedStructure {

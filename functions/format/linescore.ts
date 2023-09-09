@@ -14,12 +14,12 @@ export async function formatLinescore(gameId: string) {
     const gmInn = await gameClass.getByInning();
     const gmState = await gameClass.getGameState();
 
-    const gameDate = new Date(gmDT.get('dateTime'));
+    const gameDate = new Date(gmDT['dateTime']);
     const dateSimple: string = gameDate.toLocaleDateString('en-US', {
         timeZone: 'America/Los_Angeles' 
     }); // MM/DD/YYYY
-    const awayName: string = gmTeams.get('awayName');
-    const homeName: string = gmTeams.get('homeName');
+    const awayName: string = gmTeams['awayName'];
+    const homeName: string = gmTeams['homeName'];
 
     /* Split linescore into 9 sections like a 3x3 grid */
 
@@ -55,17 +55,17 @@ export async function formatLinescore(gameId: string) {
     let midMid = ''; // Away team runs scored by inning
     let botMid = ''; // Home team runs scored by inning
 
-    for (let i = 1; i <= gmState.get('inning'); i++) {
+    for (let i = 1; i <= gmState['inning']; i++) {
         topMid += i.toString().padEnd(3); // 3 spaces between each number
     }
 
     topMid = `  ${topMid}`;
     midPad = ''.padStart(topMid.length, '-');
 
-    for (const i of Object.values(gmInn.get('awayRunsByInn')) as any[]) {
+    for (const i of Object.values(gmInn['awayRunsByInn']) as any[]) {
         midMid += i.toString().padEnd(3);
     }
-    for (const i of Object.values(gmInn.get('homeRunsByInn')) as any[]) {
+    for (const i of Object.values(gmInn['homeRunsByInn']) as any[]) {
         botMid += i.toString().padEnd(3);
     }
 
@@ -76,12 +76,12 @@ export async function formatLinescore(gameId: string) {
     const topRight = '  R  H  E  ';
     const rightPad = ''.padStart(topRight.length, '-');
 
-    const awayRuns = gmTeams.get('awayRuns').toString();
-    const awayHits = gmTeams.get('awayHits').toString();
-    const awayErrors = gmTeams.get('awayErrors').toString();
-    const homeRuns = gmTeams.get('homeRuns').toString();
-    const homeHits = gmTeams.get('homeHits').toString();
-    const homeErrors = gmTeams.get('homeErrors').toString();
+    const awayRuns = gmTeams['awayRuns'].toString();
+    const awayHits = gmTeams['awayHits'].toString();
+    const awayErrors = gmTeams['awayErrors'].toString();
+    const homeRuns = gmTeams['homeRuns'].toString();
+    const homeHits = gmTeams['homeHits'].toString();
+    const homeErrors = gmTeams['homeErrors'].toString();
 
     const midRight = `  ${awayRuns.padEnd(3)}${awayHits.padEnd(3)}${awayErrors}`;
     const botRight = `  ${homeRuns.padEnd(3)}${homeHits.padEnd(3)}${homeErrors}`;

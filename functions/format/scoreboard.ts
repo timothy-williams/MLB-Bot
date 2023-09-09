@@ -9,8 +9,8 @@ export async function formatScoreboard(gameId: string) {
     const gmTeams = await gameClass.getAwayHomeInfo();
     const gmDT = await gameClass.getDateTime();
 
-    const awayName = gmTeams.get('awayName').toLowerCase().replace(/\s+/g, '');
-    const homeName = gmTeams.get('homeName').toLowerCase().replace(/\s+/g, '');
+    const awayName = gmTeams['awayName'].toLowerCase().replace(/\s+/g, '');
+    const homeName = gmTeams['homeName'].toLowerCase().replace(/\s+/g, '');
 
     // Get custom Discord team emojis from server
     const discordSecret = await getDiscordSecrets();
@@ -18,7 +18,7 @@ export async function formatScoreboard(gameId: string) {
         authToken: discordSecret?.token,
         applicationId: undefined,
         guildId: discordSecret?.guild_id
-        };
+    };
     const getTeamEmojis = await getGuildEmojis(endpointInfo);
     const teamEmojis = getTeamEmojis.data;
 
@@ -34,19 +34,19 @@ export async function formatScoreboard(gameId: string) {
         };
     };
 
-    const awayAbbr = gmTeams.get('awayAbbr');
-    const awayRuns = gmTeams.get('awayRuns');
-    const awayWin = gmTeams.get('awayWin');
-    const awayLoss = gmTeams.get('awayLoss');
-    const homeAbbr = gmTeams.get('homeAbbr');
-    const homeRuns = gmTeams.get('homeRuns');
-    const homeWin = gmTeams.get('homeWin');
-    const homeLoss = gmTeams.get('homeLoss');
+    const awayAbbr = gmTeams['awayAbbr'];
+    const awayRuns = gmTeams['awayRuns'];
+    const awayWin = gmTeams['awayWin'];
+    const awayLoss = gmTeams['awayLoss'];
+    const homeAbbr = gmTeams['homeAbbr'];
+    const homeRuns = gmTeams['homeRuns'];
+    const homeWin = gmTeams['homeWin'];
+    const homeLoss = gmTeams['homeLoss'];
 
     const awayLine = `${awayEmoji} ${awayAbbr} ${awayRuns} (${awayWin}-${awayLoss})`;
     const homeLine = `${homeEmoji} ${homeAbbr} ${homeRuns} (${homeWin}-${homeLoss})`;
 
-    const condenseStatus = gmState.get('condenseStatus');
+    const condenseStatus = gmState['condenseStatus'];
     var statusEmoji = '';
 
     switch (condenseStatus) {
@@ -72,7 +72,7 @@ export async function formatScoreboard(gameId: string) {
 
     var score = `${statusEmoji} ${condenseStatus} ${awayLine} @ ${homeLine}`;
 
-    const DT = new Date(gmDT.get('startTime'));
+    const DT = new Date(gmDT['startTime']);
     const toPST = DT.toLocaleString('en-US', {
         hour: 'numeric',
         minute: 'numeric',
@@ -81,12 +81,12 @@ export async function formatScoreboard(gameId: string) {
     });
 
     const timeEmoji: string = emoji.emojify(":clock3:");
-    const abstract = gmState.get('abstractState');
-    const inning = gmState.get('inning');
-    const half = gmState.get('half');
-    const intLength = gmState.get('gameLength');
+    const abstract = gmState['abstractState'];
+    const inning = gmState['inning'];
+    const half = gmState['half'];
+    const intLength = gmState['gameLength'];
 
-    if (gmState.get('TBD') && (abstract === 'Preview')) { 
+    if (gmState['TBD'] && (abstract === 'Preview')) { 
         return `${score} ${timeEmoji} TBD`;
     } 
     

@@ -9,6 +9,8 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { ScoresToday  } from './commands/todays_scores';
 import { LastGame } from './commands/last_game';
+import { DivisionStandings, WildCardStandings } from './commands/standings';
+import { divisionIDs, leagueIDs } from './constants/MLBProps';
 
 //const AWS = require("aws-sdk");
 const commandHistoryTableName = process.env.CommandHistoryTableName;
@@ -86,6 +88,17 @@ export async function handler(
           embed_object = await new LastGame().buildObject(input.commandValue);
       } else {
           discord_content = "Please provide a league and team name.";
+      }
+      break;
+    case "standings":
+      if (input.commandValue !== undefined) {
+        if (input.commandValue in divisionIDs) {
+          embed_object = await new DivisionStandings().buildObject(input.commandValue);
+        } else if (input.commandValue in leagueIDs) {
+          embed_object = await new WildCardStandings().buildObject(input.commandValue);
+        }
+      } else {
+        discord_content = "Please provide a standings name.";
       }
       break;
     default:

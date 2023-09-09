@@ -53,4 +53,18 @@ export class Team {
         }
         return this.lastGameID;
     }
+
+    async getTeamInfo() {
+        const tmData = await this.getTeamData();
+        const tm = tmData.teams[0];
+        const teamInfo: Record<string, any> = {
+            fullTeamName: tm.name,
+            venue: tm.venue.name,
+            teamAbbr: tm.abbreviation,
+            teamName: tm.teamName,
+            locationName: tm.locationName
+        };
+
+        return teamInfo;
+    }
 }

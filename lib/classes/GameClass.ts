@@ -27,129 +27,122 @@ export class Game {
 
     async getGameState() {
         const gm: Record<any, any> = await this.getGameData();
-        const map = new Map([
-            ['detailedState', gm.gameData.status.detailedState],
-            ['abstractState', gm.gameData.status.abstractGameState],
-            ['TBD', gm.gameData.status.startTimeTBD]
-        ]);
+        const gameState: Record<string, any> = {
+            detailedState: gm.gameData.status.detailedState,
+            abstractState: gm.gameData.status.abstractGameState,
+            TBD: gm.gameData.status.startTimeTBD,
+        };
 
-        if (map.get('abstractState') === 'Preview' || 
-            map.get('detailedState').startsWith('Warmup')) {
-            map.set('condenseStatus', 'Scheduled');
-        } else if (map.get('detailedState').startsWith('In Progress')) {
-            map.set('condenseStatus', 'Live');
-        } else if (map.get('detailedState').startsWith('Delayed')) {
-            map.set('condenseStatus', 'Delayed');
-        } else if (map.get('detailedState').startsWith('Suspended')) {
-            map.set('condenseStatus', 'Suspended');
-        } else if (map.get('abstractState') === 'Final') {
-            map.set('condenseStatus', 'Final');
+        if (gameState['abstractState'] === 'Preview' || gameState['detailedState'].startsWith('Warmup')) {
+            gameState['condenseStatus'] = 'Scheduled';
+        } else if (gameState['detailedState'].startsWith('In Progress')) {
+            gameState['condenseStatus'] = 'Live';
+        } else if (gameState['detailedState'].startsWith('Delayed')) {
+            gameState['condenseStatus'] = 'Delayed';
+        } else if (gameState['detailedState'].startsWith('Suspended')) {
+            gameState['condenseStatus'] = 'Suspended';
+        } else if (gameState['abstractState'] === 'Final') {
+            gameState['condenseStatus'] = 'Final';
         } else {
-            map.set('condenseStatus', '???');
+            gameState['condenseStatus'] = '???';
         }
 
-        if (('currentInning' in gm.liveData.linescore) && 
-            !('resumeDateTime' in gm.gameData.datetime)) {
-            map.set('inning', gm.liveData.linescore.currentInning);
+        if ('currentInning' in gm.liveData.linescore && !('resumeDateTime' in gm.gameData.datetime)) {
+            gameState['inning'] = gm.liveData.linescore.currentInning;
         } else {
-            map.set('inning', false);
+            gameState['inning'] = false;
         }
 
-        if (map.get('abstractState') === 'Live') {
-            map.set('half', gm.liveData.linescore.inningHalf);
+        if (gameState['abstractState'] === 'Live') {
+            gameState['half'] = gm.liveData.linescore.inningHalf;
             if (gm.liveData.linescore.inningHalf === 'Bottom') {
-                map.set('half', 'Bot');
-            };
+                gameState['half'] = 'Bot';
+            }
         } else {
-            map.set('half', false);
+            gameState['half'] = false;
         }
 
-        if (map.get('abstractState') === 'Final') {
-            map.set('gameLength', gm.gameData.gameInfo.gameDurationMinutes);
+        if (gameState['abstractState'] === 'Final') {
+            gameState['gameLength'] = gm.gameData.gameInfo.gameDurationMinutes;
         } else {
-            map.set('gameLength', false);
+            gameState['gameLength'] = false;
         }
 
-        return map;
+        return gameState;
     }
 
     async getAwayHomeInfo() {
-        const gm: Record<any, any> = await this.getGameData();
+        const gm = await this.getGameData();
         const away = gm.gameData.teams.away;
         const home = gm.gameData.teams.home;
         const awayLS = gm.liveData.linescore.teams.away;
         const homeLS = gm.liveData.linescore.teams.home;
-        const map = new Map([
-            ['awayName', away.clubName],
-            ['awayAbbr', away.abbreviation],
-            ['awayWin', away.record.leagueRecord.wins],
-            ['awayLoss', away.record.leagueRecord.losses],
-            ['homeName', home.clubName],
-            ['homeAbbr', home.abbreviation],
-            ['homeWin', home.record.leagueRecord.wins],
-            ['homeLoss', home.record.leagueRecord.losses],
-        ]);
+        const awayHomeInfo: Record<string, any> = {
+            awayName: away.clubName,
+            awayAbbr: away.abbreviation,
+            awayWin: away.record.leagueRecord.wins,
+            awayLoss: away.record.leagueRecord.losses,
+            homeName: home.clubName,
+            homeAbbr: home.abbreviation,
+            homeWin: home.record.leagueRecord.wins,
+            homeLoss: home.record.leagueRecord.losses,
+        };
 
-        if (('runs' && 'hits' && 'errors') in awayLS) {
-            map.set('awayRuns', awayLS.runs);
-            map.set('awayHits', awayLS.hits);
-            map.set('awayErrors', awayLS.errors);
-            map.set('homeRuns', homeLS.runs);
-            map.set('homeHits', homeLS.hits);
-            map.set('homeErrors', homeLS.errors);
+        if ('runs' in awayLS) {
+            awayHomeInfo['awayRuns'] = awayLS.runs;
+            awayHomeInfo['awayHits'] = awayLS.hits;
+            awayHomeInfo['awayErrors'] = awayLS.errors;
+            awayHomeInfo['homeRuns'] = homeLS.runs;
+            awayHomeInfo['homeHits'] = homeLS.hits;
+            awayHomeInfo['homeErrors'] = homeLS.errors;
         } else {
-            map.set('awayRuns', 0);
-            map.set('awayHits', 0);
-            map.set('awayErrors', 0);
-            map.set('homeRuns', 0);
-            map.set('homeHits', 0);
-            map.set('homeErrors', 0);
+            awayHomeInfo['awayRuns'] = 0;
+            awayHomeInfo['awayHits'] = 0;
+            awayHomeInfo['awayErrors'] = 0;
+            awayHomeInfo['homeRuns'] = 0;
+            awayHomeInfo['homeHits'] = 0;
+            awayHomeInfo['homeErrors'] = 0;
         }
 
-        return map;
+        return awayHomeInfo;
     }
 
     async getDateTime() {
         const gm = await this.getGameData();
-        const map = new Map<string, any>([
-            ['dateTimeDict', gm.gameData.datetime],
-            ['dateTime', gm.gameData.datetime.dateTime]
-        ]);
+        const dateTimeInfo: Record<string, any> = {
+            dateTimeDict: gm.gameData.datetime,
+            dateTime: gm.gameData.datetime.dateTime
+        };
 
-        if ('resumeDateTime' in map.get('dateTimeDict')) {
-            map.set('startTime', gm.gameData.datetime.resumeDateTime);
-        } else if (('firstPitch' in map.get('dateTimeDict')) &&
-            !('resumeDateTime' in map.get('dateTimeDict'))) {
-            map.set('startTime', gm.gameData.datetime.firstPitch);
+        if ('resumeDateTime' in dateTimeInfo['dateTimeDict']) {
+            dateTimeInfo['startTime'] = gm.gameData.datetime.resumeDateTime;
+        } else if ('firstPitch' in dateTimeInfo['dateTimeDict'] && !('resumeDateTime' in dateTimeInfo['dateTimeDict'])) {
+            dateTimeInfo['startTime'] = gm.gameData.datetime.firstPitch;
         } else {
-            map.set('startTime', gm.gameData.datetime.dateTime);
+            dateTimeInfo['startTime'] = gm.gameData.datetime.dateTime;
         }
 
-        return map;
+        return dateTimeInfo;
     }
 
     async getByInning() {
         const gm = await this.getGameData();
-        const individualInnings = gm.liveData.linescore.innings
-        const map = new Map<string, any>([
-            ['awayRunsByInn', {}],
-            ['homeRunsByInn', {}]
-        ]);
+        const individualInnings = gm.liveData.linescore.innings;
+        const inningsByTeam: Record<string, any> = {
+            awayRunsByInn: {},
+            homeRunsByInn: {},
+        };
 
         for (const inn of individualInnings) {
-            const away = map.get('awayRunsByInn');
-            const home = map.get('homeRunsByInn');
+            inningsByTeam.awayRunsByInn[inn.ordinalNum] = inn.away.runs;
 
-            if ((away) && (home)) {
-                away[inn.ordinalNum] = inn.away.runs;
-                if ('runs' in inn.home) {
-                    home[inn.ordinalNum] = inn.home.runs;
-                } else {
-                    home[inn.ordinalNum] = 'X';
-                }
+            if ('runs' in inn.home) {
+                inningsByTeam.homeRunsByInn[inn.ordinalNum] = inn.home.runs;
+            } else {
+                inningsByTeam.homeRunsByInn[inn.ordinalNum] = 'X';
             }
         }
 
-        return map;
+        return inningsByTeam;
     }
 }
