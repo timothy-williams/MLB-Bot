@@ -37,7 +37,8 @@ export class DivisionStandings implements EmbedStructure {
 
 export class WildCardStandings implements EmbedStructure {
     async content(leagueId: string) {
-        return (await formatWildCardStandings(leagueId));
+        const standings = await formatWildCardStandings(leagueId);
+        return "```" + standings + "```";
     }
 
     title(leagueId: string) {
