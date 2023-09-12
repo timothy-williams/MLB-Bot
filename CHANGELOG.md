@@ -1,4 +1,6 @@
 # Change Log
+## 2023-9-9
+- `/standings` V1.0: Display current standings for a division or wild card
 ## 2023-9-1
 - Split `last_game` up into `last_game_al` and `last_game_nl` to fit within Discord's 25 choice limit
 ## 2023-8-31

@@ -1,14 +1,9 @@
 # MLB-Bot To-Do list
 ### In Progress/Next
-- Create command `/standings`
+- `/todays_scores` - Fix bug where header date displays in UTC instead of PST
 ### To-do
 - N/A
 ### Planned Features
-- `/standings` - Display standings from selected division or wild card
-### Known Bugs
 - N/A
-### Requests
-- Support `/todays_scores` parameters that sort by...
- - Winning score
- - Largest margin of victory
- - Game length
+### Known Bugs
+- `/todays_scores` - Displays header date in UTC instead of PST
